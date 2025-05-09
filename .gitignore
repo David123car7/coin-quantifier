@@ -51,7 +51,24 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.ipdb
+*.sdf
+*.log
+*.exe.recipe
+*.iobj
+*.tlog
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
 src/.vs
+src/x64
 
 
 

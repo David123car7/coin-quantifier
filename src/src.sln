@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "src", "src.vcxproj", "{24852C29-7C85-4FAF-9E5E-FCF10F81276B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "coin_quantifier", "src.vcxproj", "{24852C29-7C85-4FAF-9E5E-FCF10F81276B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3D2D8B1D-9DBA-4E22-98D7-8A4D5BABA007}
+		SolutionGuid = {9B19CAB9-9317-4F16-AE7A-BADB33601503}
 	EndGlobalSection
 EndGlobal
