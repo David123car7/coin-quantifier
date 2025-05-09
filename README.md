@@ -20,5 +20,19 @@ This project implements a C application that automatically detects and counts eu
 ## 🛠️ Technologies
 
 - **Language:** C  
-- **Library:** OpenCV C API 
+- **Library:** OpenCV C API
+
+## 🚀 How to Run (Linux)
+
+1. **Compile te program:**
+
+   ```bash
+   g++ Source.cpp vc.c -Iinclude `pkg-config --cflags --libs opencv4` -o coin-quantifier
+
+2. **Run the program:**
+
+   ```bash
+   ./coin-quantifier
+
+If using windows open the program with visual studio
 
