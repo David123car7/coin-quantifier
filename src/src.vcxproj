@@ -140,7 +140,7 @@
   <ItemGroup>
     <ClCompile Include="edge.c" />
     <ClCompile Include="labelling.c" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="source.cpp" />
     <ClCompile Include="vc.c" />
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ extern "C" {
 
 int main(void) {
 	// Vídeo
-	char videofile[20] = "video.avi";
+	char videofile[20] = "videos/video1.mp4";
 	cv::VideoCapture capture;
 	struct
 	{
