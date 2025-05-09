@@ -24,12 +24,17 @@ This project implements a C application that automatically detects and counts eu
 
 ## 🚀 How to Run (Linux)
 
-1. **Compile te program:**
+1. **Install dependencies:**
+
+   ```bash
+   sudo apt install libopencv-dev build-essential cmake
+
+2. **Compile te program:**
 
    ```bash
    g++ Source.cpp vc.c -Iinclude `pkg-config --cflags --libs opencv4` -o coin-quantifier
 
-2. **Run the program:**
+3. **Run the program:**
 
    ```bash
    ./coin-quantifier
