@@ -506,7 +506,7 @@ int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int sm
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			pos1 = y * bytesperline + x * channels;
-			pos2 = y * bpl + x * 1;
+			//pos2 = y * bpl + x * 1;
 
 			float fhmin = src->data[pos1] / 255.0f * 360;
 			float fhmax = src->data[pos1] / 255.0f * 360;
@@ -516,10 +516,53 @@ int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int sm
 			float fvmax = src->data[pos1 + 2] / 255.0f * 100;
 
 			if (fhmin >= hmin && fhmax <= hmax && fsmin >= smin && fsmax <= smax && fvmin >= vmin && fvmax <= vmax) {
-				dst->data[pos2] = 1;
+				dst->data[pos1] = 255;
+				dst->data[pos1 + 1] = 255;
+				dst->data[pos1 + 2] = 255;
 				continue;
 			}
-			dst->data[pos2] = 0;
+			dst->data[pos1] = 0;
+			dst->data[pos1 + 1] = 0;
+			dst->data[pos1 + 2] = 0;
+		}
+	}
+	return 1;
+}
+
+int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax) {
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int bpl = dst->bytesperline;
+	int channels = src->channels;
+	int x, y;
+	long int pos1, pos2;
+
+
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if (channels != 3)return 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pos1 = y * bytesperline + x * channels;
+			//pos2 = y * bpl + x * 1;
+
+			float fhmin = src->data[pos1] / 255.0f * 360;
+			float fhmax = src->data[pos1] / 255.0f * 360;
+			float fsmin = src->data[pos1 + 1] / 255.0f * 100;
+			float fsmax = src->data[pos1 + 1] / 255.0f * 100;
+			float fvmin = src->data[pos1 + 2] / 255.0f * 100;
+			float fvmax = src->data[pos1 + 2] / 255.0f * 100;
+
+			if (fhmin >= hmin && fhmax <= hmax && fsmin >= smin && fsmax <= smax && fvmin >= vmin && fvmax <= vmax) {
+				dst->data[pos1] = 255;
+				dst->data[pos1 + 1] = 255;
+				dst->data[pos1 + 2] = 255;
+				continue;
+			}
+			dst->data[pos1] = 0;
+			dst->data[pos1 + 1] = 0;
+			dst->data[pos1 + 2] = 0;
 		}
 	}
 	return 1;
