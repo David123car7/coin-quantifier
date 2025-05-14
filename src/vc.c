@@ -770,4 +770,22 @@ int vc_three_to_one_channel(IVC* src, IVC* dst){
 	return 1;
 }
 
+int vc_one_to_three_channel(IVC* src, IVC* dst) {
+	int width = src->width;
+	int height = src->height;
+	int sPos1, dPos1 = 0;
+	int x, y, k = 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			sPos1 = y * src->bytesperline + x;
+			dPos1 = y * dst->bytesperline + x * dst->channels;
+			dst->data[dPos1] = src->data[sPos1];
+			dst->data[dPos1 +1] = src->data[sPos1];
+			dst->data[dPos1+2] = src->data[sPos1];
+		}
+	}
+	return 1;
+}
+
 

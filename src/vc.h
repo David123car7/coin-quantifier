@@ -53,6 +53,7 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 
 int vc_three_to_one_channel(IVC* src, IVC* dst);
+int vc_one_to_three_channel(IVC* src, IVC* dst);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UM BLOB (OBJECTO)
