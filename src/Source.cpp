@@ -68,6 +68,7 @@ int main(void) {
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
 
 		/* Exemplo de inser��o texto na frame */
+		/*
 		str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
@@ -80,7 +81,7 @@ int main(void) {
 		str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-
+		*/
 
 		// Fa�a o seu c�digo aqui...
 
@@ -89,8 +90,9 @@ int main(void) {
 		// Copia dados de imagem da estrutura cv::Mat para uma estrutura IVC
 		memcpy(image->data, frame.data, video.width* video.height * 3);
 		// Executa uma fun��o da nossa biblioteca vc
+		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageD);
-		vc_hsv_segmentation2(imageD, imageC, 160, 220, 20, 100, 20, 100);
+		vc_hsv_segmentation2(imageD, imageC, 30, 40, 40, 80, 15, 30);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
 		memcpy(frame.data, imageC->data, video.width* video.height * 3);
 		// Liberta a mem�ria da imagem IVC que havia sido criada

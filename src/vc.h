@@ -45,6 +45,7 @@ int vc_write_image(char* filename, IVC* image);
 int vc_gray_negative(IVC* srcdst);
 
 int vc_rgb_to_hsv(IVC* src, IVC* dst);
+int vc_gbr_rgb(IVC* src);
 int vc_scale_gray_tocolor_pallete(IVC* src, IVC* dst);
 int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
 int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);

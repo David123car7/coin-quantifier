@@ -383,6 +383,28 @@ int vc_gray_negative(IVC* srcdst) {
     return 1;
 }
 
+int vc_gbr_rgb(IVC* src) {
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int channels = src->channels;
+	int x, y, a;
+	long int pos1, pos2;
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
+	if (channels != 3)return 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pos1 = y * bytesperline + x * channels;
+			pos2 = pos1 + 2;
+			a = src->data[pos1];
+			src->data[pos1] = src->data[pos2];
+			src->data[pos2] = a;
+		}
+	}
+	return 1;
+}
+
 int vc_rgb_to_hsv(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;
