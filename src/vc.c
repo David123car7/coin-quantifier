@@ -590,7 +590,7 @@ int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int s
 	return 1;
 }
 
-/*int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
+int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
 	int width = src->width;
 	int height = src->height;
 	int bytesperline = src->bytesperline;
@@ -660,7 +660,7 @@ int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int s
 			if (src->data[pos1] < t)dst->data[pos1] = 0;
 		}
 	}
-}*/
+}
 
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel){
 	int width = src->width;
@@ -741,3 +741,33 @@ int vc_binary_dilate(IVC* src, IVC* dst, int kernel){
 	}
 	return 1;
 }
+
+/// @brief Converts a hsv image with 3 channels to a image with only 1 channel
+/// @param src Hsv Image
+/// @param dst New image
+int vc_three_to_one_channel(IVC* src, IVC* dst){
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int destBytesperline = dst->bytesperline;
+	int channels = src->channels;
+	int sPos1, dPos1 = 0;
+	int x, y, k = 0;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			sPos1 = y * bytesperline + x * channels;
+			dPos1 = y * destBytesperline + x;
+			if(src->data[sPos1] == 255){
+				dst->data[dPos1] = 255;
+			}
+			else if(src->data[sPos1] == 0){
+				dst->data[dPos1] = 0;
+			}
+			sPos1 = sPos1+3;
+		}
+	}
+	return 1;
+}
+
+
