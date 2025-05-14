@@ -781,3 +781,61 @@ int vc_one_to_three_channel(IVC* src, IVC* dst) {
 	}
 	return 1;
 }
+
+int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
+	int width = src->width;
+	int height = src->height;
+	int xMin, yMin, xMax, yMax;
+	int sumX, sumY;
+	int x, y;
+	int pos;
+	for (int i = 0; i < nlabels; i++) {
+		xMin = width - 1;
+		yMin = height - 1;
+		xMax = 0;
+		yMax = 0;
+		sumX = 0;
+		sumY = 0;
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++) {
+				pos = y * src->bytesperline + x;
+				if (src->data[pos] == blobs[i].label) {
+					// Área
+					blobs[i].area++;
+
+					// Centro de Gravidade
+					sumX += x;
+					sumY += y;
+
+					// Bounding Box
+					if (xMin > x) xMin = x;
+					if (yMin > y) yMin = y;
+					if (xMax < x) xMax = x;
+					if (yMax < y) yMax = y;
+
+					// Perímetro
+					// Se pelo menos um dos quatro vizinhos não pertence ao mesmo label, então é um pixel de contorno
+					if ((src->data[pos - 1] != blobs[i].label) || (src->data[pos + 1] != blobs[i].label) || (src->data[pos - src->bytesperline] != blobs[i].label) || (src->data[pos + src->bytesperline] != blobs[i].label))
+					{
+						blobs[i].perimeter++;
+					}
+				}
+			}
+		}
+		//Centro de gravidade
+		blobs[i].xc = sumX / blobs[i].area;
+		blobs[i].yc = sumY / blobs[i].area;
+
+		//Area
+		blobs[i].area = blobs[i].area / 255;
+		blobs[i].perimeter = blobs[i].perimeter;
+
+		// Bounding Box
+		blobs[i].x = xMin;
+		blobs[i].y = yMin;
+		blobs[i].width = (xMax - xMin) + 1;
+		blobs[i].height = (yMax - yMin) + 1;
+	}
+
+	return 1;
+}

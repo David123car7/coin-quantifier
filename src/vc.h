@@ -64,6 +64,7 @@ typedef struct {
 	int label;					// Etiqueta
 } OVC;
 
+int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 
 int vc_gray_histogram_equalization(IVC* src, IVC* dst);
 int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
