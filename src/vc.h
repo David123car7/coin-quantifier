@@ -10,6 +10,7 @@
 #ifndef VC_H
 #define VC_H
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,6 +54,8 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 
 int vc_three_to_one_channel(IVC* src, IVC* dst);
+int vc_one_to_three_channel(IVC* src, IVC* dst);
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UM BLOB (OBJECTO)
@@ -75,8 +78,11 @@ int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 // int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
 
-#ifdef __cplusplus
-}
-#endif
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                    PROT�TIPOS DE FUN��ES
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
+//int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
 
-#endif // VC_H
+#endif
