@@ -1,9 +1,9 @@
 #include "vc.h"
 // Etiquetagem de blobs
-// src		: Imagem binária de entrada
-// dst		: Imagem grayscale (irá conter as etiquetas)
-// nlabels	: Endereço de memória de uma variável, onde será armazenado o número de etiquetas encontradas.
-// OVC*		: Retorna um array de estruturas de blobs (objectos), com respectivas etiquetas. É necessário libertar posteriormente esta memória.
+// src		: Imagem binï¿½ria de entrada
+// dst		: Imagem grayscale (irï¿½ conter as etiquetas)
+// nlabels	: Endereï¿½o de memï¿½ria de uma variï¿½vel, onde serï¿½ armazenado o nï¿½mero de etiquetas encontradas.
+// OVC*		: Retorna um array de estruturas de blobs (objectos), com respectivas etiquetas. ï¿½ necessï¿½rio libertar posteriormente esta memï¿½ria.
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 {
 	unsigned char* datasrc = (unsigned char*)src->data;
@@ -19,26 +19,26 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int labelarea[256] = { 0 };
 	int label = 1; // Etiqueta inicial.
 	int num, tmplabel;
-	OVC* blobs; // Apontador para array de blobs (objectos) que será retornado desta função.
+	OVC* blobs; // Apontador para array de blobs (objectos) que serï¿½ retornado desta funï¿½ï¿½o.
 
-	// Verificação de erros
+	// Verificaï¿½ï¿½o de erros
 	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
 	if ((src->width != dst->width) || (src->height != dst->height) || (src->channels != dst->channels)) return NULL;
 	if (channels != 1) return NULL;
 
-	// Copia dados da imagem binária para imagem grayscale
+	// Copia dados da imagem binï¿½ria para imagem grayscale
 	memcpy(datadst, datasrc, bytesperline * height);
 
-	// Todos os pixéis de plano de fundo devem obrigatóriamente ter valor 0
-	// Todos os pixéis de primeiro plano devem obrigatóriamente ter valor 255
-	// Serão atribuídas etiquetas no intervalo [1,254]
-	// Este algoritmo está assim limitado a 254 labels
+	// Todos os pixï¿½is de plano de fundo devem obrigatï¿½riamente ter valor 0
+	// Todos os pixï¿½is de primeiro plano devem obrigatï¿½riamente ter valor 255
+	// Serï¿½o atribuï¿½das etiquetas no intervalo [1,254]
+	// Este algoritmo estï¿½ assim limitado a 254 labels
 	for (i = 0, size = bytesperline * height; i < size; i++)
 	{
 		if (datadst[i] != 0) datadst[i] = 255;
 	}
 
-	// Limpa os rebordos da imagem binária
+	// Limpa os rebordos da imagem binï¿½ria
 	for (y = 0; y < height; y++)
 	{
 		datadst[y * bytesperline + 0 * channels] = 0;
@@ -78,13 +78,13 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 				{
 					num = 255;
 
-					// Se A está marcado
+					// Se A estï¿½ marcado
 					if (datadst[posA] != 0) num = labeltable[datadst[posA]];
-					// Se B está marcado, e é menor que a etiqueta "num"
+					// Se B estï¿½ marcado, e ï¿½ menor que a etiqueta "num"
 					if ((datadst[posB] != 0) && (labeltable[datadst[posB]] < num)) num = labeltable[datadst[posB]];
-					// Se C está marcado, e é menor que a etiqueta "num"
+					// Se C estï¿½ marcado, e ï¿½ menor que a etiqueta "num"
 					if ((datadst[posC] != 0) && (labeltable[datadst[posC]] < num)) num = labeltable[datadst[posC]];
-					// Se D está marcado, e é menor que a etiqueta "num"
+					// Se D estï¿½ marcado, e ï¿½ menor que a etiqueta "num"
 					if ((datadst[posD] != 0) && (labeltable[datadst[posD]] < num)) num = labeltable[datadst[posD]];
 
 					// Atribui a etiqueta ao pixel
@@ -165,7 +165,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 
 	//printf("\nMax Label = %d\n", label);
 
-	// Contagem do número de blobs
+	// Contagem do nï¿½mero de blobs
 	// Passo 1: Eliminar, da tabela, etiquetas repetidas
 	for (a = 1; a < label - 1; a++)
 	{
@@ -174,7 +174,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 			if (labeltable[a] == labeltable[b]) labeltable[b] = 0;
 		}
 	}
-	// Passo 2: Conta etiquetas e organiza a tabela de etiquetas, para que não hajam valores vazios (zero) entre etiquetas
+	// Passo 2: Conta etiquetas e organiza a tabela de etiquetas, para que nï¿½o hajam valores vazios (zero) entre etiquetas
 	*nlabels = 0;
 	for (a = 1; a < label; a++)
 	{
@@ -185,7 +185,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 		}
 	}
 
-	// Se não há blobs
+	// Se nï¿½o hï¿½ blobs
 	if (*nlabels == 0) return NULL;
 
 	// Cria lista de blobs (objectos) e preenche a etiqueta
@@ -212,11 +212,11 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int xmin, ymin, xmax, ymax;
 	long int sumx, sumy;
 
-	// Verificação de erros
+	// Verificaï¿½ï¿½o de erros
 	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
 	if (channels != 1) return 0;
 
-	// Conta área de cada blob
+	// Conta ï¿½rea de cada blob
 	for (i = 0; i < nblobs; i++)
 	{
 		xmin = width - 1;
@@ -237,7 +237,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 
 				if (data[pos] == blobs[i].label)
 				{
-					// Área
+					// ï¿½rea
 					blobs[i].area++;
 
 					// Centro de Gravidade
@@ -250,8 +250,8 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 					if (xmax < x) xmax = x;
 					if (ymax < y) ymax = y;
 
-					// Perímetro
-					// Se pelo menos um dos quatro vizinhos não pertence ao mesmo label, então é um pixel de contorno
+					// Perï¿½metro
+					// Se pelo menos um dos quatro vizinhos nï¿½o pertence ao mesmo label, entï¿½o ï¿½ um pixel de contorno
 					if ((data[pos - 1] != blobs[i].label) || (data[pos + 1] != blobs[i].label) || (data[pos - bytesperline] != blobs[i].label) || (data[pos + bytesperline] != blobs[i].label))
 					{
 						blobs[i].perimeter++;

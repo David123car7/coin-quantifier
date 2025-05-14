@@ -70,5 +70,8 @@ ipch/
 src/.vs
 src/x64
 
+src/coin-quantifier
+src/Source.o
+
 
 

@@ -1,13 +1,13 @@
  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//           INSTITUTO POLITÉCNICO DO CÁVADO E DO AVE
+//           INSTITUTO POLITï¿½CNICO DO Cï¿½VADO E DO AVE
 //                          2022/2023
-//             ENGENHARIA DE SISTEMAS INFORMÁTICOS
-//                    VISÃO POR COMPUTADOR
+//             ENGENHARIA DE SISTEMAS INFORMï¿½TICOS
+//                    VISï¿½O POR COMPUTADOR
 //
 //             [  DUARTE DUQUE - dduque@ipca.pt  ]
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Desabilita (no MSVC++) warnings de funções não seguras (fopen, sscanf, etc...)
+// Desabilita (no MSVC++) warnings de funï¿½ï¿½es nï¿½o seguras (fopen, sscanf, etc...)
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -17,11 +17,11 @@
 #include "vc.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//            FUNÇÕES: ALOCAR E LIBERTAR UMA IMAGEM
+//            FUNï¿½ï¿½ES: ALOCAR E LIBERTAR UMA IMAGEM
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-// Alocar memória para uma imagem
+// Alocar memï¿½ria para uma imagem
 IVC *vc_image_new(int width, int height, int channels, int levels)
 {
 	IVC *image = (IVC *) malloc(sizeof(IVC));
@@ -45,7 +45,7 @@ IVC *vc_image_new(int width, int height, int channels, int levels)
 }
 
 
-// Libertar memória de uma imagem
+// Libertar memï¿½ria de uma imagem
 IVC *vc_image_free(IVC *image)
 {
 	if(image != NULL)
@@ -65,7 +65,7 @@ IVC *vc_image_free(IVC *image)
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//    FUNÇÕES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
+//    FUNï¿½ï¿½ES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -229,7 +229,7 @@ IVC *vc_read_image(char *filename)
 				return NULL;
 			}
 
-			// Aloca memória para imagem
+			// Aloca memï¿½ria para imagem
 			image = vc_image_new(width, height, channels, levels);
 			if(image == NULL) return NULL;
 
@@ -271,7 +271,7 @@ IVC *vc_read_image(char *filename)
 				return NULL;
 			}
 
-			// Aloca memória para imagem
+			// Aloca memï¿½ria para imagem
 			image = vc_image_new(width, height, channels, levels);
 			if(image == NULL) return NULL;
 
@@ -568,7 +568,7 @@ int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int s
 	return 1;
 }
 
-int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
+/*int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
 	int width = src->width;
 	int height = src->height;
 	int bytesperline = src->bytesperline;
@@ -587,7 +587,7 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			pos1 = y * bytesperline + x * channels;
-			//dá o numero da coluna do pixel central
+			//dï¿½ o numero da coluna do pixel central
 			y1 = y;
 			//o for anda com as colunas para cima a partir do pixel central
 			for (y1; y1 > y - bound; y1--) {
@@ -638,7 +638,7 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
 			if (src->data[pos1] < t)dst->data[pos1] = 0;
 		}
 	}
-}
+}*/
 
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel){
 	int width = src->width;
@@ -656,7 +656,7 @@ int vc_binary_dilate(IVC* src, IVC* dst, int kernel){
 		for (x = 0; x < width; x++) {
 			pos1 = y * bytesperline + x * channels;
 			dst->data[pos1] = 0;
-			//dá o numero da linha do pixel central
+			//dï¿½ o numero da linha do pixel central
 			y1 = y;
 			//o for anda com as colunas para cima a partir do pixel central
 			for (y1; y1 >= y - bound; y1--) {

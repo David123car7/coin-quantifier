@@ -1,43 +1,47 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//           INSTITUTO POLIT…CNICO DO C¡VADO E DO AVE
+//           INSTITUTO POLIT√ìCNICO DO C√ÅVADO E DO AVE
 //                          2022/2023
-//             ENGENHARIA DE SISTEMAS INFORM¡TICOS
-//                    VIS√O POR COMPUTADOR
+//             ENGENHARIA DE SISTEMAS INFORM√ÅTICOS
+//                    VIS√ÉO POR COMPUTADOR
 //
 //             [  DUARTE DUQUE - dduque@ipca.pt  ]
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+#ifndef VC_H
+#define VC_H
 
-#define VC_DEBUG
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <math.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UMA IMAGEM
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 typedef struct {
-	unsigned char *data;
-	int width, height;
-	int channels;			// Bin·rio/Cinzentos=1; RGB=3
-	int levels;				// Bin·rio=1; Cinzentos [1,255]; RGB [1,255]
-	int bytesperline;		// width * channels
+    unsigned char *data;
+    int width, height;
+    int channels;          // Bin√°rio/Cinzento=1; RGB=3
+    int levels;            // Bin√°rio=1; Cinzentos [1,255]; RGB [1,255]
+    int bytesperline;      // width * channels
 } IVC;
 
 #define MAX3(a, b, c) (a > b ? (a > c ? a : c) : (b > c ? b : c))
 #define MIN3(a, b, c) (a < b ? (a < c ? a : c) : (b < c ? b : c))
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                    PROT”TIPOS DE FUN«’ES
+//                    PROT√ìTIPOS DE FUN√á√ïES
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// FUN«’ES: ALOCAR E LIBERTAR UMA IMAGEM
-IVC *vc_image_new(int width, int height, int channels, int levels);
-IVC *vc_image_free(IVC *image);
+// FUN√á√ïES: ALOCAR E LIBERTAR UMA IMAGEM
+IVC* vc_image_new(int width, int height, int channels, int levels);
+IVC* vc_image_free(IVC* image);
 
-// FUN«’ES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
-IVC *vc_read_image(char *filename);
-int vc_write_image(char *filename, IVC *image);
+// FUN√á√ïES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
+IVC* vc_read_image(char* filename);
+int vc_write_image(char* filename, IVC* image);
 int vc_gray_negative(IVC* srcdst);
 
 int vc_rgb_to_hsv(IVC* src, IVC* dst);
@@ -52,21 +56,24 @@ int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 typedef struct {
-	int x, y, width, height;	// Caixa Delimitadora (Bounding Box)
-	int area;					// ¡rea
-	int xc, yc;					// Centro-de-massa
-	int perimeter;				// PerÌmetro
-	int label;					// Etiqueta
+    int x, y, width, height;    // Caixa Delimitadora (Bounding Box)
+    int area;                   // √Årea
+    int xc, yc;                 // Centro-de-massa
+    int perimeter;              // Per√≠metro
+    int label;                  // Etiqueta
 } OVC;
-
 
 int vc_gray_histogram_equalization(IVC* src, IVC* dst);
 int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                    PROT√ìTIPOS DE FUN√á√ïES DE BLOB
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
+// int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                    PROT”TIPOS DE FUN«’ES
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-//OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
-//int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
+#ifdef __cplusplus
+}
+#endif
+
+#endif // VC_H
