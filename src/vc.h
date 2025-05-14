@@ -48,6 +48,10 @@ int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int s
 int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 
+int vc_three_to_one_channel(IVC* src, IVC* dst);
+int vc_one_to_three_channel(IVC* src, IVC* dst);
+
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UM BLOB (OBJECTO)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,5 +73,5 @@ int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
 //                    PROTÓTIPOS DE FUNÇÕES
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-//OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
+OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 //int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
