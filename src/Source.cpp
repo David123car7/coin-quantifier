@@ -56,8 +56,11 @@ int main(void) {
 	IVC* imageA = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageB = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageC = vc_image_new(video.width, video.height, 3, 255);
-	IVC* imageD = vc_image_new(video.width, video.height, 1, 255);
+	IVC* imageD = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageE = vc_image_new(video.width, video.height, 1, 255);
+	IVC* imageH = vc_image_new(video.width, video.height, 3, 255);
+	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
+
 
 
 	cv::Mat frame;
