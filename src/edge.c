@@ -34,6 +34,30 @@ int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th) {
 	return 1;
 }
 
+int vc_draw_edge(IVC* src, IVC* dst) {
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int bpl = dst->bytesperline;
+	int channels = src->channels;
+	int channels2 = dst->channels;
+	int x, y;
+	long int pos1, pos2;
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			pos1 = y * bytesperline + x * channels;
+			pos2 = y * bpl + x * channels2;
+			if (src->data[pos1] != 0) {
+				dst->data[pos2] = 255;
+				dst->data[pos2 + 1] = 0;
+				dst->data[pos2 + 2] = 0;
+			}
+		}
+	}
+	return 1;
+}
+
 int vc_gray_histogram_equalization(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;

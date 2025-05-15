@@ -53,11 +53,11 @@ int main(void) {
 	cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
 	cv::namedWindow("VC - VIDEO1", cv::WINDOW_AUTOSIZE);
 	IVC* image = vc_image_new(video.width, video.height, 3, 255);
-	IVC* imageD = vc_image_new(video.width, video.height, 3, 255);
+	IVC* imageA = vc_image_new(video.width, video.height, 3, 255);
+	IVC* imageB = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageC = vc_image_new(video.width, video.height, 3, 255);
+	IVC* imageD = vc_image_new(video.width, video.height, 1, 255);
 	IVC* imageE = vc_image_new(video.width, video.height, 1, 255);
-	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
-	IVC* imageH = vc_image_new(video.width, video.height, 3, 255);
 
 
 	cv::Mat frame;
@@ -94,20 +94,32 @@ int main(void) {
 
 		// Copia dados de imagem da estrutura cv::Mat para uma estrutura IVC
 		memcpy(image->data, frame.data, video.width* video.height * 3);
-		cv::imshow("VC - VIDEO", frame);
+		
 		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
-		vc_rgb_to_hsv(image, imageD);
-		vc_hsv_segmentation2(imageD, imageC, 30, 60, 15, 80, 15, 100);
+		vc_rgb_to_hsv(image, imageA);
+		vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 130, 20, 132);
 		int nlabels = 0;
-		vc_three_to_one_channel(imageC, imageF);
-		vc_binary_erode(imageC, imageD, 5);
-		vc_binary_dilate(imageD, imageC, 7);
-		memcpy(frame.data, imageC->data, video.width* video.height * 3);
-		OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
-		vc_binary_blob_info(imageE, blobs, nlabels);
-		vc_draw_bounding_box(imageE, imageF, blobs, nlabels);
+		vc_three_to_one_channel(imageB, imageD);
+		vc_binary_erode(imageD, imageE, 3);
+		vc_binary_dilate(imageE, imageD, 3);
+		vc_gray_edge_prewitt(imageD, imageE, 5);
+		//OVC * blobs = vc_binary_blob_labelling(imageD, imageE, &nlabels);
+		//vc_binary_blob_info(imageE, blobs, nlabels);
+		//vc_draw_bounding_box(imageE, imageD, blobs, nlabels);
+
+		vc_draw_edge(imageE, image);
+		//vc_one_to_three_channel(imageE, imageA);
+		vc_gbr_rgb(image);
+		//vc_draw_bounding_box2(imageA, image, blobs, nlabels);
+
+
+
+		memcpy(frame.data, image->data, video.width* video.height * 3);
+		cv::imshow("VC - VIDEO", frame);
+
 		vc_one_to_three_channel(imageE, imageC);
+		memcpy(frame.data, imageC->data, video.width* video.height * 3);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
 		
 		// Liberta a mem�ria da imagem IVC que havia sido criada
@@ -121,12 +133,12 @@ int main(void) {
 		/* Sai da aplica��o, se o utilizador premir a tecla 'q' */
 		key = cv::waitKey(1);
 	}
-	vc_image_free(imageD);
 	vc_image_free(image);
+	vc_image_free(imageA);
+	vc_image_free(imageB);
 	vc_image_free(imageC);
+	vc_image_free(imageD);
 	vc_image_free(imageE);
-	vc_image_free(imageF);
-	vc_image_free(imageH);
 
 	/* Fecha a janela */
 	cv::destroyWindow("VC - VIDEO");

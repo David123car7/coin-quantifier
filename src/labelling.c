@@ -317,8 +317,57 @@ int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
+/// <summary>
+/// Draws the bounding box of a blob
+/// </summary>
+/// <param name="src">Source Image</param>
+/// <param name="dest">Destination image (where boxes will be drawn)</param>
+/// <param name="blobs">Array of blob structures with bounding box info</param>
+/// <param name="nlabels">Number of blobs</param>
+/// <returns>Returns 1 if successful</returns>
+int vc_draw_bounding_box2(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
+	int width = src->width;
+	int height = src->height;
+	int channels = dest->channels;
+	int bpl = dest->bytesperline;
 
+	for (int i = 0; i < nlabels; i++) {
+		int x = blobs[i].x;
+		int y = blobs[i].y;
+		int boxw = blobs[i].width;
+		int boxh = blobs[i].height;
 
+		// Draw top and bottom lines
+		for (int k = 0; k < boxw; k++) {
+			int pos_top = (y * bpl) + ((x + k) * channels);
+			int pos_bottom = ((y + boxh - 1) * bpl) + ((x + k) * channels);
+
+			dest->data[pos_top] = 0;     // R
+			dest->data[pos_top + 1] = 0;   // G
+			dest->data[pos_top + 2] = 0; // B
+
+			dest->data[pos_bottom] = 0;
+			dest->data[pos_bottom + 1] = 0;
+			dest->data[pos_bottom + 2] = 0;
+		}
+
+		// Draw left and right lines
+		for (int k = 0; k < boxh; k++) {
+			int pos_left = ((y + k) * bpl) + (x * channels);
+			int pos_right = ((y + k) * bpl) + ((x + boxw - 1) * channels);
+
+			dest->data[pos_left] = 0;
+			dest->data[pos_left + 1] = 0;
+			dest->data[pos_left + 2] = 0;
+
+			dest->data[pos_right] = 0;
+			dest->data[pos_right + 1] = 0;
+			dest->data[pos_right + 2] = 0;
+		}
+	}
+
+	return 1;
+}
 
 
 
