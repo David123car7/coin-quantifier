@@ -799,4 +799,25 @@ int vc_one_to_three_channel(IVC* src, IVC* dst) {
 	return 1;
 }
 
+int vc_add_image(IVC* src, IVC* dst){
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int channels = src->channels;
+	int sPos1;
+	int x, y, k = 0;
 
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			sPos1 = y * bytesperline + x* channels;
+
+			if (src->data[sPos1] != 0) {
+				dst->data[sPos1] = 255;
+				dst->data[sPos1 + 1] = 255;
+				dst->data[sPos1 + 2] = 255;
+			}
+		}
+	}
+
+}

@@ -97,29 +97,22 @@ int main(void) {
 		
 		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
-		vc_rgb_to_hsv(image, imageA);
-		vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 130, 20, 132);
+		vc_rgb_to_hsv(image, imageD);
+		vc_hsv_segmentation2(imageD, imageC, 20, 100, 35, 100, 20, 100);//amarelas erode 3/3
+		vc_hsv_segmentation2(imageD, imageH, 0, 360, 0, 25, 20,50);//cinzentos erode 7/3
+		vc_add_image(imageC, imageH);
+		vc_hsv_segmentation2(imageD, imageC, 20, 50, 25,60, 0, 30);
+		vc_add_image(imageH, imageC);
 		int nlabels = 0;
-		vc_three_to_one_channel(imageB, imageD);
-		vc_binary_erode(imageD, imageE, 3);
-		vc_binary_dilate(imageE, imageD, 3);
-		vc_gray_edge_prewitt(imageD, imageE, 5);
-		//OVC * blobs = vc_binary_blob_labelling(imageD, imageE, &nlabels);
+		vc_three_to_one_channel(imageC, imageF);
+		//vc_binary_erode(imageC, imageD, 3);
+		//vc_binary_dilate(imageD, imageC, 3);
+		
+		memcpy(frame.data, imageH->data, video.width* video.height * 3);
+		//OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
 		//vc_binary_blob_info(imageE, blobs, nlabels);
-		//vc_draw_bounding_box(imageE, imageD, blobs, nlabels);
-
-		vc_draw_edge(imageE, image);
-		//vc_one_to_three_channel(imageE, imageA);
-		vc_gbr_rgb(image);
-		//vc_draw_bounding_box2(imageA, image, blobs, nlabels);
-
-
-
-		memcpy(frame.data, image->data, video.width* video.height * 3);
-		cv::imshow("VC - VIDEO", frame);
-
-		vc_one_to_three_channel(imageE, imageC);
-		memcpy(frame.data, imageC->data, video.width* video.height * 3);
+		//vc_draw_bounding_box(imageE, imageF, blobs, nlabels);
+		//vc_one_to_three_channel(imageE, imageC);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
 		
 		// Liberta a mem�ria da imagem IVC que havia sido criada
