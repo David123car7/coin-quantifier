@@ -231,9 +231,6 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 			for (x = 0; x < width; x++) {
 				pos = y * src->bytesperline + x;
 				if (src->data[pos] == blobs[i].label) {
-					// Área
-					blobs[i].area++;
-
 					// Centro de Gravidade
 					sumX += x;
 					sumY += y;
@@ -243,23 +240,18 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 					if (yMin > y) yMin = y;
 					if (xMax < x) xMax = x;
 					if (yMax < y) yMax = y;
-
-					// Perímetro
-					// Se pelo menos um dos quatro vizinhos não pertence ao mesmo label, então é um pixel de contorno
-					if ((src->data[pos - 1] != blobs[i].label) || (src->data[pos + 1] != blobs[i].label) || (src->data[pos - src->bytesperline] != blobs[i].label) || (src->data[pos + src->bytesperline] != blobs[i].label))
-					{
-						blobs[i].perimeter++;
-					}
 				}
 			}
 		}
+
+		//Area & Perimeter
+		float raio = (xMax - xMin) / 2;
+		blobs[i].area = 3.1416 * pow(raio, 2);
+		blobs[i].perimeter = (3.1415 * raio) * 2;
+
 		//Centro de gravidade
 		blobs[i].xc = sumX / blobs[i].area;
 		blobs[i].yc = sumY / blobs[i].area;
-
-		//Area
-		blobs[i].area = blobs[i].area / 255;
-		blobs[i].perimeter = blobs[i].perimeter;
 
 		// Bounding Box
 		blobs[i].x = xMin;
