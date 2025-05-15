@@ -47,7 +47,7 @@ int main(void) {
 	video.fps = (int)capture.get(cv::CAP_PROP_FPS);
 	/* Resolu��o do v�deo */
 	video.width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
-	video.height = 720;//(int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+	video.height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
 
 	/* Cria uma janela para exibir o v�deo */
 	cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
@@ -55,6 +55,10 @@ int main(void) {
 	IVC* image = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageD = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageC = vc_image_new(video.width, video.height, 3, 255);
+	IVC* imageE = vc_image_new(video.width, video.height, 1, 255);
+	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
+	IVC* imageH = vc_image_new(video.width, video.height, 3, 255);
+
 
 	cv::Mat frame;
 	while (key != 'q') {
@@ -96,7 +100,7 @@ int main(void) {
 		vc_binary_erode(imageC, imageD, 5);
 		vc_binary_dilate(imageD, imageC, 7);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
-		memcpy(frame.data, imageC->data, video.width* video.height * 3);
+		memcpy(frame.data, imageH->data, video.width* video.height * 3);
 		// Liberta a mem�ria da imagem IVC que havia sido criada
 
 		// +++++++++++++++++++++++++
@@ -110,6 +114,9 @@ int main(void) {
 	vc_image_free(imageD);
 	vc_image_free(image);
 	vc_image_free(imageC);
+	vc_image_free(imageE);
+	vc_image_free(imageF);
+	vc_image_free(imageH);
 
 	/* Fecha a janela */
 	cv::destroyWindow("VC - VIDEO");

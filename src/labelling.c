@@ -1,9 +1,29 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//           INSTITUTO POLITÉCNICO DO CÁVADO E DO AVE
+//                          2022/2023
+//             ENGENHARIA DE SISTEMAS INFORMÁTICOS
+//                    VISÃO POR COMPUTADOR
+//
+//             [  DUARTE DUQUE - dduque@ipca.pt  ]
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Desabilita (no MSVC++) warnings de funções não seguras (fopen, sscanf, etc...)
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <malloc.h>
 #include "vc.h"
-// Etiquetagem de blobs
-// src		: Imagem binária de entrada
-// dst		: Imagem grayscale (irá conter as etiquetas)
-// nlabels	: Endereço de memória de uma variável, onde será armazenado o número de etiquetas encontradas.
-// OVC*		: Retorna um array de estruturas de blobs (objectos), com respectivas etiquetas. É necessário libertar posteriormente esta memória.
+
+
+/// <summary>
+/// Etiquetagem de blobs
+/// </summary>
+/// <param name="src">Imagem binária de entrada</param>
+/// <param name="dst">Imagem grayscale (irá conter as etiquetas)</param>
+/// <param name="nlabels"> Endereço de memória de uma variável, onde será armazenado o número de etiquetas encontradas.</param>
+/// <returns>Retorna um array de estruturas de blobs (objectos), com respectivas etiquetas. É necessário libertar posteriormente esta memória.</returns>
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 {
 	unsigned char* datasrc = (unsigned char*)src->data;
@@ -199,80 +219,106 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	return blobs;
 }
 
-
-/*int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs)
-{
-	unsigned char* data = (unsigned char*)src->data;
+/// <summary>
+/// Calculates information about labeled binary blobs in an image:
+/// - Area
+/// - Centroid (center of gravity)
+/// - Bounding box (x, y, width, height)
+/// - Perimeter
+/// </summary>
+/// <param name="src">Pointer to the labeled binary image (each pixel has a blob label)</param>
+/// <param name="blobs">Array of OVC structures (one for each labeled object)</param>
+/// <param name="nlabels">Number of labeled objects (blobs)</param>
+/// <returns>1 if successful</returns>
+int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 	int width = src->width;
 	int height = src->height;
-	int bytesperline = src->bytesperline;
-	int channels = src->channels;
-	int x, y, i;
-	long int pos;
-	int xmin, ymin, xmax, ymax;
-	long int sumx, sumy;
-
-	// Verificação de erros
-	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
-	if (channels != 1) return 0;
-
-	// Conta área de cada blob
-	for (i = 0; i < nblobs; i++)
-	{
-		xmin = width - 1;
-		ymin = height - 1;
-		xmax = 0;
-		ymax = 0;
-
-		sumx = 0;
-		sumy = 0;
-
-		blobs[i].area = 0;
-
-		for (y = 1; y < height - 1; y++)
-		{
-			for (x = 1; x < width - 1; x++)
-			{
-				pos = y * bytesperline + x * channels;
-
-				if (data[pos] == blobs[i].label)
-				{
-					// Área
-					blobs[i].area++;
-
+	int xMin, yMin, xMax, yMax;
+	int sumX, sumY;
+	int x, y;
+	int pos;
+	for (int i = 0; i < nlabels; i++) {
+		xMin = width - 1;
+		yMin = height - 1;
+		xMax = 0;
+		yMax = 0;
+		sumX = 0;
+		sumY = 0;
+		for (y = 0; y < height; y++) {
+			for (x = 0; x < width; x++) {
+				pos = y * src->bytesperline + x;
+				if (src->data[pos] == blobs[i].label) {
 					// Centro de Gravidade
-					sumx += x;
-					sumy += y;
+					sumX += x;
+					sumY += y;
 
 					// Bounding Box
-					if (xmin > x) xmin = x;
-					if (ymin > y) ymin = y;
-					if (xmax < x) xmax = x;
-					if (ymax < y) ymax = y;
-
-					// Perímetro
-					// Se pelo menos um dos quatro vizinhos não pertence ao mesmo label, então é um pixel de contorno
-					if ((data[pos - 1] != blobs[i].label) || (data[pos + 1] != blobs[i].label) || (data[pos - bytesperline] != blobs[i].label) || (data[pos + bytesperline] != blobs[i].label))
-					{
-						blobs[i].perimeter++;
-					}
+					if (xMin > x) xMin = x;
+					if (yMin > y) yMin = y;
+					if (xMax < x) xMax = x;
+					if (yMax < y) yMax = y;
 				}
 			}
 		}
 
-		// Bounding Box
-		blobs[i].x = xmin;
-		blobs[i].y = ymin;
-		blobs[i].width = (xmax - xmin) + 1;
-		blobs[i].height = (ymax - ymin) + 1;
+		//Area & Perimeter
+		float raio = (xMax - xMin) / 2;
+		blobs[i].area = 3.1416 * pow(raio, 2);
+		blobs[i].perimeter = (3.1415 * raio) * 2;
 
-		// Centro de Gravidade
-		//blobs[i].xc = (xmax - xmin) / 2;
-		//blobs[i].yc = (ymax - ymin) / 2;
-		blobs[i].xc = sumx / MAX(blobs[i].area, 1);
-		blobs[i].yc = sumy / MAX(blobs[i].area, 1);
+		//Centro de gravidade
+		blobs[i].xc = sumX / blobs[i].area;
+		blobs[i].yc = sumY / blobs[i].area;
+
+		// Bounding Box
+		blobs[i].x = xMin;
+		blobs[i].y = yMin;
+		blobs[i].width = (xMax - xMin) + 1;
+		blobs[i].height = (yMax - yMin) + 1;
 	}
 
 	return 1;
 }
-*/
+
+/// <summary>
+/// Draws the bounding box of a blob
+/// </summary>
+/// <param name="src">Source Image</param>
+/// <param name="dest">Destination image (where boxes will be drawn)</param>
+/// <param name="blobs">Array of blob structures with bounding box info</param>
+/// <param name="nlabels">Number of blobs</param>
+/// <returns>Returns 1 if successful</returns>
+int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
+	int width = src->width;
+	int height = src->height;
+	int pos, pos2;
+	for (int i = 0; i < nlabels; i++) {
+		pos = blobs[i].y * src->bytesperline + blobs[i].x;
+		pos2 = pos + src->bytesperline * blobs[i].height;
+		dest->data[pos] = 255;
+
+		//Top & Bottom
+		for (int k = 0; k < blobs[i].width; k++) {
+			pos++;
+			pos2++;
+			dest->data[pos] = 255;
+			dest->data[pos2] = 255;
+		}
+
+		//Right & Left
+		pos2 = pos2 - blobs[i].width;
+		for (int x = 0; x < blobs[i].height; x++) {
+			pos = pos + src->bytesperline;
+			pos2 = pos2 - src->bytesperline;
+			dest->data[pos] = 255;
+			dest->data[pos2] = 255;
+		}
+	}
+	return 1;
+}
+
+
+
+
+
+
