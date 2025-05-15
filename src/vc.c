@@ -727,7 +727,6 @@ int vc_binary_erode(IVC* src, IVC* dst, int kernel)
 
 			int erode = 1;
 
-			// Check kernel neighborhood
 			for (int y1 = -bound; y1 <= bound && erode; y1++) {
 				int y2 = y + y1;
 				if (y2 < 0 || y2 >= height) continue;

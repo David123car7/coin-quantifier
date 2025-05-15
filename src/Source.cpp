@@ -63,7 +63,10 @@ int main(void) {
 	cv::Mat frame;
 	while (key != 'q') {
 		/* Leitura de uma frame do v�deo */
-		capture.read(frame);
+		for (int i = 0; i < 2; i++) {
+			capture.read(frame);
+			if (frame.empty()) break;
+		}
 
 		/* Verifica se conseguiu ler a frame */
 		if (frame.empty()) break;
@@ -71,8 +74,6 @@ int main(void) {
 		/* N�mero da frame a processar */
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
 
-		/* Exemplo de inser��o texto na frame */
-		/*
 		str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
@@ -85,7 +86,7 @@ int main(void) {
 		str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-		*/
+		
 
 		// Fa�a o seu c�digo aqui...
 
@@ -98,13 +99,14 @@ int main(void) {
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageD);
 		vc_hsv_segmentation2(imageD, imageC, 30, 60, 15, 80, 15, 100);
+		int nlabels = 0;
+		vc_three_to_one_channel(imageC, imageF);
 		vc_binary_erode(imageC, imageD, 5);
 		vc_binary_dilate(imageD, imageC, 7);
 		memcpy(frame.data, imageC->data, video.width* video.height * 3);
-		int nlabels;
-		vc_three_to_one_channel(imageC, imageF);
 		OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
 		vc_binary_blob_info(imageE, blobs, nlabels);
+		vc_draw_bounding_box(imageE, imageF, blobs, nlabels);
 		vc_one_to_three_channel(imageE, imageC);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
 		
