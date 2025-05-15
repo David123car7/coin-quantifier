@@ -662,82 +662,100 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel) {
 	}
 }
 
-int vc_binary_dilate(IVC* src, IVC* dst, int kernel){
+int vc_binary_dilate(IVC* src, IVC* dst, int kernel)
+{
+	if (!src || !dst || kernel < 1 || kernel % 2 == 0) return 0; // Sanity checks
+
 	int width = src->width;
 	int height = src->height;
 	int bytesperline = src->bytesperline;
 	int channels = src->channels;
-	int x, y;
-	long int pos1, pos2;
 
-	int y1, x1, xmin, xmax;
 	int bound = (kernel - 1) / 2;
 
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
-			pos1 = y * bytesperline + x * channels;
-			dst->data[pos1] = 0;
-			//dá o numero da linha do pixel central
-			y1 = y;
-			//o for anda com as colunas para cima a partir do pixel central
-			for (y1; y1 >= y - bound; y1--) {
-				if (y1 < 0) break;
-				//quanto pode andar para tras e para a frente
-				xmin = y1 * src->bytesperline;
-				xmax = y1 * src->bytesperline + src->bytesperline - 1;
-				//da a posicao central da linha a verificar os lados
-				pos2 = y1 * bytesperline + x * channels;
-				x1 = pos2;
-				//anda para tras a partir da nova posicao central
-				for (x1; x1 >= x - bound; x1--) {
-					//se ja tiver passado para a linha anterior, mata
-					if (x1 < xmin) break;
-					if (src->data[x1] == 1) {
-						dst->data[pos1] = 1;
-						break;
+			int found = 0;
+
+			// Check kernel neighborhood
+			for (int y1 = -bound; y1 <= bound && !found; y1++) {
+				int y2 = y + y1;
+				if (y2 < 0 || y2 >= height) continue;
+
+				for (int x1 = -bound; x1 <= bound && !found; x1++) {
+					int x2 = x + x1;
+					if (x2 < 0 || x2 >= width) continue;
+
+					long int pos = y2 * bytesperline + x2 * channels;
+
+					if (src->data[pos] == 255) {
+						found = 1;
 					}
 				}
-				if (dst->data[pos1] == 1) break;
-				//anda para a frente a partir da nova posicao central
-				x1 = pos2 + 1;
-				for (x1; x1 <= x + bound; x1++) {
-					//se ja tiver passado para a proxima linha, mata
-					if (x1 > xmax) break;
-					if (src->data[x1] == 1) {
-						dst->data[pos1] = 1;
-						break;
-					}
-				}
-				if (dst->data[pos1] == 1) break;
 			}
-			y1 = y;
-			for (y1; y1 <= y + bound; y1++) {
-				if (y > src->height) break;
-				xmin = y1 * src->bytesperline;
-				xmax = y1 * src->bytesperline + src->bytesperline - 1;
-				pos2 = y1 * bytesperline + x * channels;
-				x1 = pos2;
-				if (dst->data[pos1] == 1) break;
-				for (x1; x1 >= x - bound; x1--) {
-					if (x1 < xmin) break;
-					if (src->data[x1] == 1) {
-						dst->data[pos1] = 1;
-						break;
-					}
-				}
-				if (dst->data[pos1] == 1) break;
-				x1 = pos2 + 1;
-				for (x1; x1 <= x + bound; x1++) {
-					if (x1 > xmax) break;
-					if (src->data[x1] == 1) {
-						dst->data[pos1] = 1;
-						break;
-					}
-				}
-				if (dst->data[pos1] == 1) break;
+
+			long int dst_pos = y * bytesperline + x * channels;
+
+			if (channels == 1) {
+				dst->data[dst_pos] = found ? 255 : 0;
+			}
+			else if (channels == 3) {
+				dst->data[dst_pos] = found ? 255 : 0;
+				dst->data[dst_pos + 1] = found ? 255 : 0;
+				dst->data[dst_pos + 2] = found ? 255 : 0;
 			}
 		}
 	}
+
+	return 1;
+}
+
+int vc_binary_erode(IVC* src, IVC* dst, int kernel)
+{
+	if (!src || !dst || kernel < 1 || kernel % 2 == 0) return 0; // Sanity checks
+
+	int width = src->width;
+	int height = src->height;
+	int bytesperline = src->bytesperline;
+	int channels = src->channels;
+
+	int bound = (kernel - 1) / 2;
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+
+			int erode = 1;
+
+			// Check kernel neighborhood
+			for (int y1 = -bound; y1 <= bound && erode; y1++) {
+				int y2 = y + y1;
+				if (y2 < 0 || y2 >= height) continue;
+
+				for (int x1 = -bound; x1 <= bound && erode; x1++) {
+					int x2 = x + x1;
+					if (x2 < 0 || x2 >= width) continue;
+
+					long int pos = y2 * bytesperline + x2 * channels;
+
+					if (src->data[pos] != 255) {
+						erode = 0;
+					}
+				}
+			}
+
+			long int pos2 = y * bytesperline + x * channels;
+
+			if (channels == 1) {
+				dst->data[pos2] = erode ? 255 : 0;
+			}
+			else if (channels == 3) {
+				dst->data[pos2] = erode ? 255 : 0;
+				dst->data[pos2 + 1] = erode ? 255 : 0;
+				dst->data[pos2 + 2] = erode ? 255 : 0;
+			}
+		}
+	}
+
 	return 1;
 }

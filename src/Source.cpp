@@ -92,7 +92,9 @@ int main(void) {
 		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageD);
-		vc_hsv_segmentation2(imageD, imageC, 30, 40, 40, 80, 15, 30);
+		vc_hsv_segmentation2(imageD, imageC, 35, 60, 30, 70, 15, 100);
+		vc_binary_erode(imageC, imageD, 5);
+		vc_binary_dilate(imageD, imageC, 7);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
 		memcpy(frame.data, imageC->data, video.width* video.height * 3);
 		// Liberta a mem�ria da imagem IVC que havia sido criada

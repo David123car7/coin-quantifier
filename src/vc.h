@@ -47,6 +47,7 @@ int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int sm
 int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
 int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
+int vc_binary_erode(IVC* src, IVC* dst, int kernel);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                   ESTRUTURA DE UM BLOB (OBJECTO)
