@@ -51,7 +51,7 @@ int main(void) {
 
 	/* Cria uma janela para exibir o v�deo */
 	cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
-
+	cv::namedWindow("VC - VIDEO1", cv::WINDOW_AUTOSIZE);
 	IVC* image = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageD = vc_image_new(video.width, video.height, 3, 255);
 	IVC* imageC = vc_image_new(video.width, video.height, 3, 255);
@@ -93,20 +93,28 @@ int main(void) {
 
 		// Copia dados de imagem da estrutura cv::Mat para uma estrutura IVC
 		memcpy(image->data, frame.data, video.width* video.height * 3);
+		cv::imshow("VC - VIDEO", frame);
 		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageD);
-		vc_hsv_segmentation2(imageD, imageC, 35, 60, 30, 70, 15, 100);
+		vc_hsv_segmentation2(imageD, imageC, 30, 60, 15, 80, 15, 100);
 		vc_binary_erode(imageC, imageD, 5);
 		vc_binary_dilate(imageD, imageC, 7);
+		memcpy(frame.data, imageC->data, video.width* video.height * 3);
+		int nlabels;
+		vc_three_to_one_channel(imageC, imageF);
+		OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
+		vc_binary_blob_info(imageE, blobs, nlabels);
+		vc_one_to_three_channel(imageE, imageC);
 		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
-		memcpy(frame.data, imageH->data, video.width* video.height * 3);
+		
 		// Liberta a mem�ria da imagem IVC que havia sido criada
 
 		// +++++++++++++++++++++++++
 
 		/* Exibe a frame */
-		cv::imshow("VC - VIDEO", frame);
+		cv::imshow("VC - VIDEO1", frame);
+		
 
 		/* Sai da aplica��o, se o utilizador premir a tecla 'q' */
 		key = cv::waitKey(1);
@@ -120,6 +128,7 @@ int main(void) {
 
 	/* Fecha a janela */
 	cv::destroyWindow("VC - VIDEO");
+	cv::destroyWindow("VC - VIDEO1");
 
 	/* Fecha o ficheiro de v�deo */
 	capture.release();
