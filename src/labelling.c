@@ -1,4 +1,21 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//           INSTITUTO POLITÉCNICO DO CÁVADO E DO AVE
+//                          2022/2023
+//             ENGENHARIA DE SISTEMAS INFORMÁTICOS
+//                    VISÃO POR COMPUTADOR
+//
+//             [  DUARTE DUQUE - dduque@ipca.pt  ]
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Desabilita (no MSVC++) warnings de funções não seguras (fopen, sscanf, etc...)
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <malloc.h>
 #include "vc.h"
+
 
 /// <summary>
 /// Etiquetagem de blobs
