@@ -54,7 +54,7 @@ int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
 
 int vc_three_to_one_channel(IVC* src, IVC* dst);
 int vc_one_to_three_channel(IVC* src, IVC* dst);
-
+int vc_add_image(IVC* src, IVC* dst);
 
 #pragma region Labels
 typedef struct {
