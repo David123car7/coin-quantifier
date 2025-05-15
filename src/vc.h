@@ -47,15 +47,15 @@ int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int sm
 int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
 int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
+int vc_gray_histogram_equalization(IVC* src, IVC* dst);
+int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
+
 
 int vc_three_to_one_channel(IVC* src, IVC* dst);
 int vc_one_to_three_channel(IVC* src, IVC* dst);
 
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                   ESTRUTURA DE UM BLOB (OBJECTO)
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+#pragma region Labels
 typedef struct {
 	int x, y, width, height;	// Caixa Delimitadora (Bounding Box)
 	int area;					// Área
@@ -64,15 +64,7 @@ typedef struct {
 	int label;					// Etiqueta
 } OVC;
 
-int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
-
-int vc_gray_histogram_equalization(IVC* src, IVC* dst);
-int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
-
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                    PROTÓTIPOS DE FUNÇÕES
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
-//int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
+int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
+int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
+#pragma endregion
