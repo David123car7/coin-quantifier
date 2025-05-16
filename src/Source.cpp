@@ -21,20 +21,11 @@ int main(void) {
 		int fps;
 		int nframe;
 	} video;
-	// Outros
 	std::string str;
 	int key = 0;
 
-	/* Leitura de v�deo de um ficheiro */
-	/* NOTA IMPORTANTE:
-	O ficheiro video.avi dever� estar localizado no mesmo direct�rio que o ficheiro de c�digo fonte.
-	*/
 	capture.open(videofile);
 
-	/* Em alternativa, abrir captura de v�deo pela Webcam #0 */
-	//capture.open(0, cv::CAP_DSHOW); // Pode-se utilizar apenas capture.open(0);
-
-	/* Verifica se foi poss�vel abrir o ficheiro de v�deo */
 	if (!capture.isOpened())
 	{
 		std::cerr << "Erro ao abrir o ficheiro de v�deo!\n";
@@ -61,15 +52,13 @@ int main(void) {
 	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
 	IVC* imageH = vc_image_new(video.width, video.height, 1, 255);
 
-
+	CoinsDict* coinsDictionary = NULL;
+	int dictKey = 0;
 
 	cv::Mat frame;
 	while (key != 'q') {
 		/* Leitura de uma frame do v�deo */
-		for (int i = 0; i < 2; i++) {
-			capture.read(frame);
-			if (frame.empty()) break;
-		}
+		capture.read(frame);
 
 		/* Verifica se conseguiu ler a frame */
 		if (frame.empty()) break;
@@ -106,16 +95,27 @@ int main(void) {
 		int nlabels = 0;
 		vc_binary_erode(imageF, imageH, 5);
 		OVC* blobs = vc_binary_blob_labelling(imageH, imageF, &nlabels);
+		if (blobs == NULL) continue;
 		vc_binary_blob_info(imageF, blobs, nlabels);
-		OVC* newBlobs = vc_check_if_circle(imageF, blobs, &nlabels);
-		//vc_draw_bounding_box2(image, newBlobs, nlabels);
-		//vc_gray_edge_prewitt(imageH, imageF, 5);
-		//vc_draw_edge(imageF, image);
+		OVC* newBlobs = vc_check_if_circle(blobs, &nlabels);
+		if (newBlobs == NULL) continue;
+
+		Coins* coinsList = NULL;
+		for (int i = 0; i < nlabels; i++) {
+			Coins* aux = CreateCoin(newBlobs[i]);
+			coinsList = AddCoin(coinsList, aux);
+		}
+		CoinsDict* auxDict = CreateCoinsDictionary(coinsList, dictKey);
+		coinsDictionary = AddDictionary(coinsDictionary, auxDict);
+		
+		vc_draw_bounding_box2(image, newBlobs, nlabels);
+		vc_gray_edge_prewitt(imageH, imageF, 5);
+		vc_draw_edge(imageF, image);
 		
 		memcpy(frame.data, image->data, video.width* video.height * 3);
 
+		dictKey++;
 		cv::imshow("VC - VIDEO1", frame);
-		
 		key = cv::waitKey(1);
 	}
 	vc_image_free(image);
