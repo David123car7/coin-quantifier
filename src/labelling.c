@@ -35,8 +35,8 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int x, y, a, b;
 	long int i, size;
 	long int posX, posA, posB, posC, posD;
-	int labeltable[256] = { 0 };
-	int labelarea[256] = { 0 };
+	int labeltable[1000] = { 0 };
+	int labelarea[1000] = { 0 };
 	int label = 1; // Etiqueta inicial.
 	int num, tmplabel;
 	OVC* blobs; // Apontador para array de blobs (objectos) que será retornado desta função.
@@ -267,9 +267,10 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 		blobs[i].perimeter = (3.1415 * raio) * 2;
 
 		//Centro de gravidade
-		blobs[i].xc = sumX / blobs[i].area;
-		blobs[i].yc = sumY / blobs[i].area;
-
+		if (blobs[i].area != 0) {
+			blobs[i].xc = sumX / blobs[i].area;
+			blobs[i].yc = sumY / blobs[i].area;
+		}
 		// Bounding Box
 		blobs[i].x = xMin;
 		blobs[i].y = yMin;
@@ -320,14 +321,11 @@ int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
 /// <summary>
 /// Draws the bounding box of a blob
 /// </summary>
-/// <param name="src">Source Image</param>
 /// <param name="dest">Destination image (where boxes will be drawn)</param>
 /// <param name="blobs">Array of blob structures with bounding box info</param>
 /// <param name="nlabels">Number of blobs</param>
 /// <returns>Returns 1 if successful</returns>
-int vc_draw_bounding_box2(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
-	int width = src->width;
-	int height = src->height;
+int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	int channels = dest->channels;
 	int bpl = dest->bytesperline;
 
