@@ -89,7 +89,7 @@ CoinsDict* FilterCoinsDict(CoinsDict* coinsDict) {
 	while (dictAux->next != NULL) {
 		Coins* coinsAux = dictAux->coins;
 		while (coinsAux->nextCoin != NULL) {
-
+			int 
 		}
 		dictAux = dictAux->next;
 	}
