@@ -90,15 +90,8 @@ int main(void) {
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
 		
-
-		// Fa�a o seu c�digo aqui...
-
-		// Cria uma nova imagem IVC
-
-		// Copia dados de imagem da estrutura cv::Mat para uma estrutura IVC
 		memcpy(image->data, frame.data, video.width* video.height * 3);
 		
-		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageA);
 		vc_gbr_rgb(image);
@@ -114,47 +107,15 @@ int main(void) {
 		vc_binary_erode(imageF, imageH, 5);
 		OVC* blobs = vc_binary_blob_labelling(imageH, imageF, &nlabels);
 		vc_binary_blob_info(imageF, blobs, nlabels);
-		vc_draw_bounding_box2(image, blobs, nlabels);
-		vc_gray_edge_prewitt(imageH, imageF, 5);
-		vc_draw_edge(imageF, image);
+		OVC* newBlobs = vc_check_if_circle(imageF, blobs, &nlabels);
+		//vc_draw_bounding_box2(image, newBlobs, nlabels);
+		//vc_gray_edge_prewitt(imageH, imageF, 5);
+		//vc_draw_edge(imageF, image);
 		
 		memcpy(frame.data, image->data, video.width* video.height * 3);
-		//OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
-		//vc_binary_blob_info(imageE, blobs, nlabels);
-		//vc_draw_bounding_box(imageE, imageF, blobs, nlabels);
-		//vc_one_to_three_channel(imageE, imageC);
-		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
-		
-		// Liberta a mem�ria da imagem IVC que havia sido criada
 
-		//memcpy(image->data, frame.data, video.width* video.height * 3);
-		//vc_gbr_rgb(image);
-		//vc_rgb_to_hsv(image, imageA);
-		//vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 100, 20, 100);//amarelas erode 3/3
-		//vc_hsv_segmentation2(imageA, imageC, 0, 360, 0, 25, 20, 50);//cinzentos erode 7/3
-		//vc_add_image(imageB, imageC);
-		//vc_hsv_segmentation2(imageA, imageB, 20, 50, 25, 60, 0, 30);
-		//vc_add_image(imageB, imageC);
-		//vc_three_to_one_channel(imageC, imageD);
-		//vc_binary_erode(imageC, imageA, 5);
-		//vc_one_to_three_channel(imageE, imageA);
-		//int nlabels = 0;
-		//OVC* blobs = vc_binary_blob_labelling(imageE, imageD, &nlabels);
-		//vc_binary_blob_info(imageD, blobs, nlabels);
-		//vc_draw_bounding_box2(imageD, image, blobs, nlabels);
-		//vc_gray_edge_prewitt(imageE, imageD, 5);
-		//vc_draw_edge(imageE, image);
-		//vc_one_to_three_channel(imageD, imageC);
-		//memcpy(frame.data, imageC->data, video.width* video.height * 3);
-		//memcpy(imageB->data, frame.data, video.width* video.height * 3);
-
-		// +++++++++++++++++++++++++
-
-		/* Exibe a frame */
 		cv::imshow("VC - VIDEO1", frame);
 		
-
-		/* Sai da aplica��o, se o utilizador premir a tecla 'q' */
 		key = cv::waitKey(1);
 	}
 	vc_image_free(image);

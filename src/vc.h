@@ -70,4 +70,6 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
 int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
+OVC* vc_check_if_circle(IVC* src, OVC* blobs, int* nLabels);
+
 #pragma endregion

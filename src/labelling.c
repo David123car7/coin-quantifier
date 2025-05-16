@@ -367,5 +367,38 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
+OVC* vc_check_if_circle(IVC* src, OVC* blobs, int* nLabels) {
+	float areaBoundingBox;
+	float value;
+	int nLabelsStart = *nLabels;
+
+	for (int i = 0; i < *nLabels; i++) {
+		areaBoundingBox = blobs[i].width * blobs[i].height;
+		value = areaBoundingBox / (float)blobs[i].area;
+		if (1.26 < value < 1.30) {
+			//its  circle
+		}
+		else {
+			blobs[i].area = 0;
+            (*nLabels)--;
+		}
+	}
+
+	if (nLabelsStart == *nLabels)
+		return NULL;
+
+	OVC* newBlobs = (OVC*)calloc((*nLabels), sizeof(OVC));
+	if (newBlobs != NULL)
+	{
+		for (int a = 0; a < (*nLabels); a++) {
+			if (blobs[a].area != 0) {
+				newBlobs[a] = blobs[a];
+			}
+		}
+	}
+
+	return newBlobs;
+}
+
 
 
