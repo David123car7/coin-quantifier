@@ -367,5 +367,48 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
+OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
+    float areaBoundingBox;
+    float value;
+    int validCount = 0;
+
+    // First pass to count valid blobs
+    for (int i = 0; i < *nLabels; i++) {
+        areaBoundingBox = (float)blobs[i].width * (float)blobs[i].height;
+        value = areaBoundingBox / (float)blobs[i].area;
+
+        if (value > 1.26f && value < 1.30f) {
+			validCount++;
+        } else {
+			blobs[i].area = 0; // Mark invalid
+        }
+    }
+
+    if (validCount == 0) {
+		*nLabels = validCount;
+		free(blobs);
+        return NULL;
+    }
+
+    // Allocate new array and copy valid blobs
+    OVC* newBlobs = (OVC*)calloc(validCount, sizeof(OVC));
+    if (newBlobs != NULL) {
+        int j = 0;
+        for (int i = 0; i < *nLabels; i++) {
+            if (blobs[i].area != 0) {
+                newBlobs[j++] = blobs[i];
+            }
+        }
+    }
+
+    *nLabels = validCount; // Update with new count
+	free(blobs);
+    return newBlobs;
+}
+
+OVC* vc_filter_blobs(OVC* blobs, int nLabels) {
+
+}
+
 
 

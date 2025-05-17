@@ -9,6 +9,10 @@
 
 
 #define VC_DEBUG
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
 #include <math.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -66,8 +70,33 @@ typedef struct {
 	int label;					// Etiqueta
 } OVC;
 
+typedef struct Coins {
+	int x, y;	
+	int area;									
+	struct Coins* nextCoin;        
+} Coins;
+
+typedef struct CoinsDict {
+	int key;
+	Coins* coins;
+	struct CoinsDict* next;
+} CoinsDict;
+
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
 int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
+OVC* vc_check_if_circle(OVC* blobs, int* nLabels);
+
+#pragma endregion
+
+#pragma region Dictionary
+CoinsDict* CreateCoinsDictionaryEmpty();
+CoinsDict* CreateCoinsDictionary(Coins* coins, int key);
+CoinsDict* AddDictionary(CoinsDict* dict, CoinsDict* newDict);
+#pragma endregion
+
+#pragma region List
+Coins* CreateCoin(OVC coin);
+Coins* AddCoin(Coins* coins, Coins* newCoin);
 #pragma endregion
