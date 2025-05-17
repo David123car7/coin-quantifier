@@ -78,8 +78,7 @@ typedef struct Coins {
 
 typedef struct CoinsDict {
 	int key;
-	Coins* rightCoins;
-	Coins* downCoins;
+	Coins* coins;
 	struct CoinsDict* next;
 } CoinsDict;
 

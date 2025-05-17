@@ -67,6 +67,7 @@ Coins* CreateCoin(OVC coin) {
 Coins* AddCoin(Coins* coins, Coins* newCoin) {
 	if (newCoin == NULL) return NULL;
 	Coins* aux = coins;
+	Coins* vertical = aux;
 
 	if (aux == NULL) {
 		coins = newCoin;
@@ -81,18 +82,63 @@ Coins* AddCoin(Coins* coins, Coins* newCoin) {
 	return coins;
 }
 
+
+
 #pragma region Filter
 CoinsDict* FilterCoinsDict(CoinsDict* coinsDict) {
 	if (coinsDict == NULL) return NULL;
 	CoinsDict* dictAux = coinsDict;
+	int greaterArea = 0;
 
-	while (dictAux->next != NULL) {
-		Coins* coinsAux = dictAux->coins;
-		while (coinsAux->nextCoin != NULL) {
-			int 
+	while (dictAux != NULL) {
+		if (dictAux->coins != NULL) {
+			Coins* coinsAux = dictAux->coins;
+			int aux = coinsAux->area;
+			greaterArea = GetMaxValue(greaterArea, aux);
+			if (coinsAux->nextCoin == NULL) { //if its the last coin
+				free(coinsAux);
+				dictAux->coins = NULL;
+			}
+			else { 
+				dictAux->coins = coinsAux->nextCoin;
+				free(coinsAux);
+			}
+
 		}
 		dictAux = dictAux->next;
 	}
+}
+
+/// <summary>
+/// Gets a coin in a dictionary in a specific key by the x and y positions
+/// </summary>
+/// <param name="coinsDict">Dictionaty</param>
+/// <param name="x">Position X</param>
+/// <param name="y">Position Y</param>
+/// <param name="key">key of the dictionaty to find the coin</param>
+/// <returns>Returns the coin or returns null</returns>
+Coins* GetCoinByPosition(CoinsDict* coinsDict, int x, int y, int key) {
+	if (coinsDict == NULL) return NULL;
+	CoinsDict* dictAux = coinsDict;
+	
+	while (dictAux != NULL) {
+		if (dictAux->key == key) {
+			Coins* coinsAux = dictAux->coins;
+			while (coinsAux != NULL) {
+				if (coinsAux->x == x && coinsAux->y == y) {
+					return coinsAux;
+				}
+				coinsAux = coinsAux->nextCoin;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+int GetMaxValue(int x, int y) {
+	if (x >= y) return x;
+	else if (y >= x) return y;
 }
 #pragma endregion
 
