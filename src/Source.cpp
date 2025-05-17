@@ -52,7 +52,9 @@ int main(void) {
 	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
 	IVC* imageH = vc_image_new(video.width, video.height, 1, 255);
 
-	CoinsDict* coinsDictionary = NULL;
+	OVC* blobBuffer = NULL;
+
+	int numberBlobsBuffer = 0;
 	int dictKey = 0;
 
 	cv::Mat frame;
@@ -115,13 +117,15 @@ int main(void) {
 		OVC* newBlobs = vc_check_if_circle(blobs, &nlabels);
 		if (newBlobs == NULL) continue;
 
-		Coins* coinsList = NULL;
-		for (int i = 0; i < nlabels; i++) {
-			Coins* aux = CreateCoin(newBlobs[i]);
-			coinsList = AddCoin(coinsList, aux);
+		if (blobBuffer == NULL) {
+			blobBuffer = newBlobs;
 		}
-		CoinsDict* auxDict = CreateCoinsDictionary(coinsList, dictKey);
-		coinsDictionary = AddDictionary(coinsDictionary, auxDict);
+		else {
+			int x = vc_check_collisions(blobBuffer[0], newBlobs[0]);
+			free(blobs);
+			blobBuffer = newBlobs;
+			numberBlobsBuffer = nlabels;
+		}
 		
 		vc_draw_bounding_box2(image, newBlobs, nlabels);
 		vc_gray_edge_prewitt(imageH, imageF, 5);

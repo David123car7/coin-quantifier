@@ -63,7 +63,7 @@ int vc_add_image(IVC* src, IVC* dst);
 
 #pragma region Labels
 typedef struct {
-	int x, y, width, height;	// Caixa Delimitadora (Bounding Box)
+	int x, y, xf, yf, width, height;	// Caixa Delimitadora (Bounding Box)
 	int area;					// �rea
 	int xc, yc;					// Centro-de-massa
 	int perimeter;				// Per�metro
@@ -87,7 +87,7 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
 int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels);
-
+int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth);
 #pragma endregion
 
 #pragma region Dictionary
