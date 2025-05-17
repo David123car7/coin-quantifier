@@ -369,34 +369,6 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
-/// <summary>
-/// Checks for collisions betwen two blobs
-/// </summary>
-/// <param name="firstBlob">First blob</param>
-/// <param name="secondBlob">Second blob</param>
-/// <returns>Returns 1 if there is a collision, returns 0 if there is not a collision</returns>
-int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth) {
-	long int xi = firstBlob.x % imageWidth;
-	long int xf = (firstBlob.xf + firstBlob.width) % imageWidth;
-	if (xi< secondBlob.x && xf > secondBlob.x) {
-		if (firstBlob.y > secondBlob.yf && firstBlob.y < secondBlob.y) {
-			return 1;
-		}
-		if (firstBlob.yf > secondBlob.yf && firstBlob.yf < secondBlob.y) {
-			return 1;
-		} 
-	}
-	if (xf > secondBlob.x && xf < secondBlob.xf) {
-		if (firstBlob.y > secondBlob.yf && firstBlob.y < secondBlob.y) {
-			return 1;
-		}
-		if (firstBlob.yf > secondBlob.yf && firstBlob.yf < secondBlob.y) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
     float areaBoundingBox;
     float value;
@@ -436,6 +408,12 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
     return newBlobs;
 }
 
+/// <summary>
+/// Checks for collisions betwen two blobs
+/// </summary>
+/// <param name="firstBlob">First blob</param>
+/// <param name="secondBlob">Second blob</param>
+/// <returns>Returns 1 if there is a collision, returns 0 if there is not a collision</returns>
 int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth) {
 	if (firstBlob.x > secondBlob.x && firstBlob.x < secondBlob.xf) {
 		if (firstBlob.y < secondBlob.yf && firstBlob.y > secondBlob.y) {
