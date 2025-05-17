@@ -64,6 +64,7 @@ int main(void) {
 
 
 	cv::Mat frame;
+	cv::Mat frameA;
 	while (key != 'q') {
 		/* Leitura de uma frame do v�deo */
 		for (int i = 0; i < 2; i++) {
@@ -94,59 +95,40 @@ int main(void) {
 		// Fa�a o seu c�digo aqui...
 
 		// Cria uma nova imagem IVC
-
+		cv::imshow("VC - VIDEO", frame);
 		// Copia dados de imagem da estrutura cv::Mat para uma estrutura IVC
-		memcpy(image->data, frame.data, video.width* video.height * 3);
+		cv::medianBlur(frame, frameA, 5);
+		memcpy(image->data, frameA.data, video.width* video.height * 3);
 		
 		// Executa uma fun��o da nossa biblioteca vc
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageA);
-		vc_gbr_rgb(image);
-		vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 100, 20, 100);//amarelas erode 3/3
-		vc_hsv_segmentation2(imageA, imageC, 0, 360, 0, 25, 20,50);//cinzentos erode 7/3
-		vc_add_image(imageB, imageC);
-		vc_hsv_segmentation2(imageA, imageB, 20, 50, 25,60, 0, 30);
-		vc_add_image(imageB, imageC);
-		vc_three_to_one_channel(imageC, imageF);
+		vc_hsv_segmentation2(imageA, imageB, 40, 60, 20, 80, 15, 55);//amarelo
+		vc_hsv_segmentation2(imageA, imageC, 19, 34, 37, 75, 15, 47);//castanho
+		//vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 100, 20, 100);//amarelas erode 3/3
+		//vc_hsv_segmentation2(imageA, imageC, 0, 360, 0, 25, 20,50);//cinzentos erode 7/3
+		vc_add_image(imageC, imageB);
+		vc_hsv_segmentation2(imageA, imageC, 40, 200, 4, 24, 15, 50);//cinzento
+		vc_add_image(imageC, imageB);
+		vc_three_to_one_channel(imageB, imageF);
+		vc_gray_edge_prewitt(imageF, imageH, 5);
+		vc_draw_edge(imageH, image);
+		memcpy(frame.data, image->data, video.width* video.height * 3);
+		
+		//vc_hsv_segmentation2(imageA, imageB, 20, 50, 25,60, 0, 30);
+		//vc_add_image(imageB, imageC);
+		//vc_three_to_one_channel(imageB, imageF);
 		//vc_binary_erode(imageF, imageH, 3);
 		//vc_binary_dilate(imageH, imageF, 3);
 		int nlabels = 0;
-		vc_binary_erode(imageF, imageH, 5);
-		OVC* blobs = vc_binary_blob_labelling(imageH, imageF, &nlabels);
+		//vc_binary_erode(imageF, imageH, 5);
+		/*OVC* blobs = vc_binary_blob_labelling(imageH, imageF, &nlabels);
 		vc_binary_blob_info(imageF, blobs, nlabels);
 		vc_draw_bounding_box2(image, blobs, nlabels);
 		vc_gray_edge_prewitt(imageH, imageF, 5);
-		vc_draw_edge(imageF, image);
+		vc_draw_edge(imageF, image);*/
 		
-		memcpy(frame.data, image->data, video.width* video.height * 3);
-		//OVC * blobs = vc_binary_blob_labelling(imageF, imageE, &nlabels);
-		//vc_binary_blob_info(imageE, blobs, nlabels);
-		//vc_draw_bounding_box(imageE, imageF, blobs, nlabels);
-		//vc_one_to_three_channel(imageE, imageC);
-		// Copia dados de imagem da estrutura IVC para uma estrutura cv::Mat
-		
-		// Liberta a mem�ria da imagem IVC que havia sido criada
-
-		//memcpy(image->data, frame.data, video.width* video.height * 3);
-		//vc_gbr_rgb(image);
-		//vc_rgb_to_hsv(image, imageA);
-		//vc_hsv_segmentation2(imageA, imageB, 20, 100, 35, 100, 20, 100);//amarelas erode 3/3
-		//vc_hsv_segmentation2(imageA, imageC, 0, 360, 0, 25, 20, 50);//cinzentos erode 7/3
-		//vc_add_image(imageB, imageC);
-		//vc_hsv_segmentation2(imageA, imageB, 20, 50, 25, 60, 0, 30);
-		//vc_add_image(imageB, imageC);
-		//vc_three_to_one_channel(imageC, imageD);
-		//vc_binary_erode(imageC, imageA, 5);
-		//vc_one_to_three_channel(imageE, imageA);
-		//int nlabels = 0;
-		//OVC* blobs = vc_binary_blob_labelling(imageE, imageD, &nlabels);
-		//vc_binary_blob_info(imageD, blobs, nlabels);
-		//vc_draw_bounding_box2(imageD, image, blobs, nlabels);
-		//vc_gray_edge_prewitt(imageE, imageD, 5);
-		//vc_draw_edge(imageE, image);
-		//vc_one_to_three_channel(imageD, imageC);
-		//memcpy(frame.data, imageC->data, video.width* video.height * 3);
-		//memcpy(imageB->data, frame.data, video.width* video.height * 3);
+		//memcpy(frame.data, imageB->data, video.width* video.height * 3);
 
 		// +++++++++++++++++++++++++
 
