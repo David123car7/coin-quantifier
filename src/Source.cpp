@@ -106,7 +106,7 @@ int main(void) {
 		vc_hsv_segmentation2(imageB, imageC, 40, 60, 20, 80, 15, 55);//amarelo
 		vc_hsv_segmentation2(imageB, imageA, 19, 38, 37, 82, 13, 47);//castanho
 		vc_add_image(imageC, imageA);
-		vc_hsv_segmentation2(imageB, imageC, 40, 200, 4, 24, 15, 50);//cinzento
+		vc_hsv_segmentation(imageB, imageC, 40, 200, 4, 24, 15, 50);//cinzento
 		vc_add_image(imageC, imageA);
 		vc_binary_dilate(imageA, imageC, 3);
 		vc_binary_erode(imageC, imageA, 3);
