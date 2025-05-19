@@ -35,8 +35,8 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int x, y, a, b;
 	long int i, size;
 	long int posX, posA, posB, posC, posD;
-	int labeltable[255] = { 0 };
-	int labelarea[255] = { 0 };
+	int labeltable[1000] = { 0 };
+	int labelarea[1000] = { 0 };
 	int label = 1; // Etiqueta inicial.
 	int num, tmplabel;
 	OVC* blobs; // Apontador para array de blobs (objectos) que será retornado desta função.
@@ -436,6 +436,49 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
+int vc_draw_bounding_box3(IVC* dest, OVC blob) {
+	int channels = dest->channels;
+	int bpl = dest->bytesperline;
+
+		int x = blob.x;
+		int y = blob.y;
+		int boxw = blob.width;
+		int boxh = blob.height;
+
+		// Ensure valid dimensions
+		if (boxw <= 0 || boxh <= 0) return 0;
+
+		// Draw top and bottom lines
+		for (int k = 0; k < boxw; k++) {
+			int pos_top = (y * bpl) + ((x + k) * channels);
+			int pos_bottom = ((y + boxh - 1) * bpl) + ((x + k) * channels);
+
+			dest->data[pos_top] = 255;
+			dest->data[pos_top + 1] = 0;
+			dest->data[pos_top + 2] = 255;
+
+			dest->data[pos_bottom] = 255;
+			dest->data[pos_bottom + 1] = 0;
+			dest->data[pos_bottom + 2] = 255;
+		}
+
+		// Draw left and right lines
+		for (int k = 0; k < boxh; k++) {
+			int pos_left = ((y + k) * bpl) + (x * channels);
+			int pos_right = ((y + k) * bpl) + ((x + boxw - 1) * channels);
+
+			dest->data[pos_left] = 255;
+			dest->data[pos_left + 1] = 0;
+			dest->data[pos_left + 2] = 255;
+
+			dest->data[pos_right] = 255;
+			dest->data[pos_right + 1] = 0;
+			dest->data[pos_right + 2] = 255;
+		}
+
+	return 1;
+}
+
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) { 
 	float areaBoundingBox;
 	float value;
@@ -509,3 +552,40 @@ int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int sec
 	return cont;
 }
 
+int idCoin(int area, int perimeter) {
+	if (area >= 24000 && area <= 26000 && perimeter > 550 && perimeter < 600) {
+		return 50; //funciona
+	}
+	else if (area >= 2100 && area <= 22000 && perimeter > 500 && perimeter < 550) {
+		return 20; //funciona
+	}
+	else if (area >= 27000 && area <= 27500 && perimeter > 600 && perimeter < 630) {
+		return 200; //funciona
+	}
+	else if (area >= 16000 && area <= 17000 && perimeter > 450 && perimeter <= 500) {
+		return 10;
+	}
+	else if (area >= 18000 && area <= 19000) {
+		return 5;
+	}
+	else if (area >= 21000 && perimeter > 500) {
+		return 100; //funciona
+	}
+	else if (area >= 14000 && area < 15500) {
+		return 2;
+	}
+	else if (area < 12000) {
+		return 1; //funciona
+	}
+	return 0;
+}
+
+int vc_center(OVC* blobs, IVC* dst, int nlabels) {
+
+	for (int k = 0; k < nlabels; k++) {
+		int pos = blobs[k].yc * dst->bytesperline + blobs[k].xc * 3;
+		dst->data[pos] = 0;
+		dst->data[pos + 1] = 0;
+		dst->data[pos + 2] = 0;
+	}
+}

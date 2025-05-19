@@ -92,6 +92,9 @@ int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int sec
 int vc_limit(IVC* src, IVC* dst, int y);
 int vc_limit2(IVC* src, IVC* dst, int y);
 int vc_delete_blob(IVC* img, OVC blob);
+int vc_draw_bounding_box3(IVC* dest, OVC blob);
+int idCoin(int area, int perimeter);
+int vc_center(OVC* blobs, IVC* dst, int nlabels);
 
 #pragma endregion
 
