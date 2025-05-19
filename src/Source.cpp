@@ -96,10 +96,10 @@ int main(void) {
 		memcpy(imageD->data, imageA->data, video.width* h * 3);
 		vc_gbr_rgb(imageA);
 		vc_rgb_to_hsv(imageA, imageB);
-		vc_hsv_segmentation2(imageB, imageC, 40, 60, 20, 80, 15, 55);//amarelo
-		vc_hsv_segmentation2(imageB, imageA, 19, 38, 37, 82, 13, 47);//castanho
+		vc_hsv_segmentation(imageB, imageC, 40, 60, 20, 80, 15, 55);//amarelo
+		vc_hsv_segmentation(imageB, imageA, 19, 38, 37, 82, 13, 47);//castanho
 		vc_add_image(imageC, imageA);
-		vc_hsv_segmentation2(imageB, imageC, 40, 200, 4, 24, 15, 50);//cinzento
+		vc_hsv_segmentation(imageB, imageC, 40, 200, 4, 24, 15, 50);//cinzento
 		vc_add_image(imageC, imageA);
 		vc_binary_dilate(imageA, imageC, 3);
 		vc_binary_erode(imageC, imageA, 3);
@@ -108,7 +108,7 @@ int main(void) {
 		vc_binary_blob_info(imageH, blobs, nlabels);
 		blobs = vc_check_if_circle(blobs, &nlabels, imageF);
 		if (blobs != NULL) {
-			vc_draw_bounding_box2(imageD, blobs, nlabels);
+			vc_draw_bounding_box(imageD, blobs, nlabels);
 			vc_gray_edge_prewitt(imageF, imageH);
 			vc_draw_edge(imageH, imageD);
 			if (blobsBuffer != NULL) {

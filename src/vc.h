@@ -42,17 +42,12 @@ IVC *vc_image_free(IVC *image);
 // FUN��ES: LEITURA E ESCRITA DE IMAGENS (PBM, PGM E PPM)
 IVC *vc_read_image(char *filename);
 int vc_write_image(char *filename, IVC *image);
-int vc_gray_negative(IVC* srcdst);
 
 int vc_rgb_to_hsv(IVC* src, IVC* dst);
 int vc_gbr_rgb(IVC* src);
-int vc_scale_gray_tocolor_pallete(IVC* src, IVC* dst);
 int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
-int vc_hsv_segmentation2(IVC* src, IVC* dst, int hmin, int hmax, int smin, int smax, int vmin, int vmax);
-int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 int vc_binary_erode(IVC* src, IVC* dst, int kernel);
-int vc_gray_histogram_equalization(IVC* src, IVC* dst);
 int vc_gray_edge_prewitt(IVC* src, IVC* dst);
 int vc_draw_edge(IVC* src, IVC* dst);
 
@@ -84,8 +79,7 @@ typedef struct CoinsDict {
 
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
-int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
-int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
+int vc_draw_bounding_box(IVC* dest, OVC* blobs, int nlabels);
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src);
 int vc_check_collisions(OVC firstBlob, OVC secondBlob);
 int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob);

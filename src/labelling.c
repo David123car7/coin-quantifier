@@ -313,75 +313,6 @@ int vc_delete_blob(IVC* img, OVC blob) {
 	return 1;
 }
 
-//OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels) {
-//	int res;
-//	int valid = *nLabels;
-//	for (int i = 0; i < *nLabels; i++) {
-//		res = check_circle(blobs[i]);
-//		if (res == 0) {
-//			delete_blob(img, blobs[i]);
-//			valid--;
-//		}
-//	}
-//	if (valid == 0) {
-//		*nLabels = valid;
-//		free(blobs);
-//		return NULL;
-//	}
-//
-//	// Allocate new array and copy valid blobs
-//	OVC* newBlobs = (OVC*)calloc(valid, sizeof(OVC));
-//	if (newBlobs != NULL) {
-//		int j = 0;
-//		for (int i = 0; i < *nLabels; i++) {
-//			if (blobs[i].area != 0) {
-//				newBlobs[j++] = blobs[i];
-//			}
-//		}
-//	}
-//
-//	*nLabels = valid; // Update with new count
-//	free(blobs);
-//	return newBlobs;
-//}
-
-/// <summary>
-/// Draws the bounding box of a blob
-/// </summary>
-/// <param name="src">Source Image</param>
-/// <param name="dest">Destination image (where boxes will be drawn)</param>
-/// <param name="blobs">Array of blob structures with bounding box info</param>
-/// <param name="nlabels">Number of blobs</param>
-/// <returns>Returns 1 if successful</returns>
-int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
-	int width = src->width;
-	int height = src->height;
-	int pos, pos2;
-	for (int i = 0; i < nlabels; i++) {
-		pos = blobs[i].y * src->bytesperline + blobs[i].x;
-		pos2 = pos + src->bytesperline * blobs[i].height;
-		dest->data[pos] = 255;
-
-		//Top & Bottom
-		for (int k = 0; k < blobs[i].width; k++) {
-			pos++;
-			pos2++;
-			dest->data[pos] = 255;
-			dest->data[pos2] = 255;
-		}
-
-		//Right & Left
-		pos2 = pos2 - blobs[i].width;
-		for (int x = 0; x < blobs[i].height; x++) {
-			pos = pos + src->bytesperline;
-			pos2 = pos2 - src->bytesperline;
-			dest->data[pos] = 255;
-			dest->data[pos2] = 255;
-		}
-	}
-	return 1;
-}
-
 /// <summary>
 /// Draws the bounding box of a blob
 /// </summary>
@@ -389,7 +320,7 @@ int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels) {
 /// <param name="blobs">Array of blob structures with bounding box info</param>
 /// <param name="nlabels">Number of blobs</param>
 /// <returns>Returns 1 if successful</returns>
-int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
+int vc_draw_bounding_box(IVC* dest, OVC* blobs, int nlabels) {
 	int channels = dest->channels;
 	int bpl = dest->bytesperline;
 

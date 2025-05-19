@@ -27,7 +27,13 @@
     <ClCompile Include="edge.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="lists.c">
+    <ClCompile Include="colors.c">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="morphOp.c">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>

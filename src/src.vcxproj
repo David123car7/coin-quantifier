@@ -138,10 +138,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="colors.c" />
     <ClCompile Include="edge.c" />
     <ClCompile Include="labelling.c" />
-    <ClCompile Include="lists.c" />
+    <ClCompile Include="morphOp.c" />
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="utils.c" />
     <ClCompile Include="vc.c" />
   </ItemGroup>
   <ItemGroup>
