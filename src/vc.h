@@ -2,7 +2,7 @@
  * \file   vc.h
  * \brief  Declarations of all functions in the program.
  * 
- * \author David Carvalho
+ * \author David Carvalho & Gonçalo Vidal & Diogo Marques & Gabriel Fortes
  * \date   May 2025
  *********************************************************************/
 
@@ -70,9 +70,7 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src);
 int vc_check_collisions(OVC firstBlob, OVC secondBlob);
 int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob);
 int vc_delete_blob(IVC* img, OVC blob);
-int vc_draw_bounding_box3(IVC* dest, OVC blob);
 int idCoin(int area, int perimeter);
 int vc_center(OVC* blobs, IVC* dst, int nlabels);
-
 #pragma endregion
 

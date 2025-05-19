@@ -398,7 +398,6 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) {
 	float value;
 	int validCount = 0;
 
-	// First pass to count valid blobs
 	for (int i = 0; i < *nLabels; i++) {
 		areaBoundingBox = (float)blobs[i].width * (float)blobs[i].height;
 		value = areaBoundingBox / (float)blobs[i].area;
@@ -418,7 +417,6 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) {
 		return NULL;
 	}
 
-	// Allocate new array and copy valid blobs
 	OVC* newBlobs = (OVC*)calloc(validCount, sizeof(OVC));
 	if (newBlobs != NULL) {
 		int j = 0;
@@ -429,7 +427,7 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) {
 		}
 	}
 
-	*nLabels = validCount; // Update with new count
+	*nLabels = validCount; 
 	free(blobs);
 	return newBlobs;
 }
