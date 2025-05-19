@@ -821,3 +821,39 @@ int vc_add_image(IVC* src, IVC* dst){
 	}
 
 }
+
+int vc_limit(IVC* src, IVC* dst, int y){
+	int width = src->width;
+	int bpl = src->bytesperline;
+	int channels = src->channels;
+	long int pos1, pos2;
+	int y1 = y;
+	for (int y2 = y; y2 < y + y; y2++) {
+		for (int x = 0; x < width; x++) {
+			pos1 = y2 * bpl + x * channels;
+			pos2 = (y2 - y1) * bpl + x * channels;
+			dst->data[pos2] = src->data[pos1];
+			dst->data[pos2 + 1] = src->data[pos1 + 1];
+			dst->data[pos2 + 2] = src->data[pos1 + 2];
+		}
+	}
+	return 1;
+}
+
+int vc_limit2(IVC* src, IVC* dst, int y) {
+	int width = src->width;
+	int bpl = src->bytesperline;
+	int channels = src->channels;
+	long int pos1, pos2;
+	int y1 = y;
+	for (int y2 = y; y2 < y + y; y2++) {
+		for (int x = 0; x < width; x++) {
+			pos1 = y2 * bpl + x * channels;
+			pos2 = (y2 - y1) * bpl + x * channels;
+			dst->data[pos1] = src->data[pos2];
+			dst->data[pos1 + 1] = src->data[pos2 + 1];
+			dst->data[pos1 + 2] = src->data[pos2 + 2];
+		}
+	}
+	return 1;
+}

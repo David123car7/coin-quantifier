@@ -88,6 +88,10 @@ int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
 int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels);
 int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth);
+OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels);
+int vc_limit(IVC* src, IVC* dst, int y);
+int vc_limit2(IVC* src, IVC* dst, int y);
+
 #pragma endregion
 
 #pragma region Dictionary

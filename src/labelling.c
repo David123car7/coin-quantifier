@@ -35,8 +35,8 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int x, y, a, b;
 	long int i, size;
 	long int posX, posA, posB, posC, posD;
-	int labeltable[1000] = { 0 };
-	int labelarea[1000] = { 0 };
+	int labeltable[255] = { 0 };
+	int labelarea[255] = { 0 };
 	int label = 1; // Etiqueta inicial.
 	int num, tmplabel;
 	OVC* blobs; // Apontador para array de blobs (objectos) que será retornado desta função.
@@ -233,7 +233,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 	int width = src->width;
 	int height = src->height;
-	int xMin, yMin, xMax, yMax;
+	int xMin, yMin, xMax, yMax, area;
 	int sumX, sumY;
 	int x, y;
 	int pos;
@@ -244,6 +244,7 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 		yMax = 0;
 		sumX = 0;
 		sumY = 0;
+		area = 0;
 		for (y = 0; y < height; y++) {
 			for (x = 0; x < width; x++) {
 				pos = y * src->bytesperline + x;
@@ -251,6 +252,7 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 					// Centro de Gravidade
 					sumX += x;
 					sumY += y;
+					area++;
 
 					// Bounding Box
 					if (xMin > x) xMin = x;
@@ -263,7 +265,8 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 
 		//Area & Perimeter
 		float raio = (xMax - xMin) / 2;
-		blobs[i].area = 3.1416 * pow(raio, 2);
+		/*blobs[i].area = 3.1416 * pow(raio, 2);*/
+		blobs[i].area = area;
 		blobs[i].perimeter = (3.1415 * raio) * 2;
 
 		//Centro de gravidade
@@ -281,6 +284,63 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels) {
 	}
 
 	return 1;
+}
+
+int check_circle(OVC blob) {
+	int box = blob.width * blob.height;
+	if (blob.area == 0) return 0;
+	float ratio = box / blob.area;
+	if (ratio > 1.26f && ratio < 1.3) {
+		return 0;
+	}
+	return 1;
+}
+
+int delete_blob(IVC* img, OVC blob) {
+	int x, y;
+	long int pos;
+	int bpl = img->bytesperline;
+	int channels = img->channels;
+	for (y = blob.y; y < blob.height; y++) {
+		for (x = blob.x; x < blob.width; x++) {
+			pos = y * img->bytesperline + x * channels;
+			img->data[pos] = 0;
+		}
+	}
+	blob.area = 0;
+	return 1;
+}
+
+OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels) {
+	int res;
+	int valid = *nLabels;
+	for (int i = 0; i < *nLabels; i++) {
+		res = check_circle(blobs[i]);
+		if (res == 0) {
+			delete_blob(img, blobs[i]);
+			valid--;
+		}
+	}
+	if (valid == 0) {
+		*nLabels = valid;
+		free(blobs);
+		return NULL;
+	}
+
+	// Allocate new array and copy valid blobs
+	OVC* newBlobs = (OVC*)calloc(valid, sizeof(OVC));
+	if (newBlobs != NULL) {
+		int j = 0;
+		for (int i = 0; i < *nLabels; i++) {
+			if (blobs[i].area != 0) {
+				newBlobs[j++] = blobs[i];
+			}
+		}
+	}
+
+	*nLabels = valid; // Update with new count
+	free(blobs);
+	return newBlobs;
 }
 
 /// <summary>
@@ -332,23 +392,28 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	int bpl = dest->bytesperline;
 
 	for (int i = 0; i < nlabels; i++) {
-		int x = blobs[i].x;
-		int y = blobs[i].y;
-		int boxw = blobs[i].width;
-		int boxh = blobs[i].height;
+		int shrink = 20; // Amount to shrink from each side (adjust as needed)
+
+		int x = blobs[i].x + shrink;
+		int y = blobs[i].y + shrink;
+		int boxw = blobs[i].width - 2 * shrink;
+		int boxh = blobs[i].height - 2 * shrink;
+
+		// Ensure valid dimensions
+		if (boxw <= 0 || boxh <= 0) continue;
 
 		// Draw top and bottom lines
 		for (int k = 0; k < boxw; k++) {
 			int pos_top = (y * bpl) + ((x + k) * channels);
 			int pos_bottom = ((y + boxh - 1) * bpl) + ((x + k) * channels);
 
-			dest->data[pos_top] = 0;     // R
-			dest->data[pos_top + 1] = 0;   // G
-			dest->data[pos_top + 2] = 0; // B
+			dest->data[pos_top] = 255;
+			dest->data[pos_top + 1] = 0;
+			dest->data[pos_top + 2] = 255;
 
-			dest->data[pos_bottom] = 0;
+			dest->data[pos_bottom] = 255;
 			dest->data[pos_bottom + 1] = 0;
-			dest->data[pos_bottom + 2] = 0;
+			dest->data[pos_bottom + 2] = 255;
 		}
 
 		// Draw left and right lines
@@ -356,13 +421,13 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 			int pos_left = ((y + k) * bpl) + (x * channels);
 			int pos_right = ((y + k) * bpl) + ((x + boxw - 1) * channels);
 
-			dest->data[pos_left] = 0;
+			dest->data[pos_left] = 255;
 			dest->data[pos_left + 1] = 0;
-			dest->data[pos_left + 2] = 0;
+			dest->data[pos_left + 2] = 255;
 
-			dest->data[pos_right] = 0;
+			dest->data[pos_right] = 255;
 			dest->data[pos_right + 1] = 0;
-			dest->data[pos_right + 2] = 0;
+			dest->data[pos_right + 2] = 255;
 		}
 	}
 
@@ -370,42 +435,43 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 }
 
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
-    float areaBoundingBox;
-    float value;
-    int validCount = 0;
+	float areaBoundingBox;
+	float value;
+	int validCount = 0;
 
-    // First pass to count valid blobs
-    for (int i = 0; i < *nLabels; i++) {
-        areaBoundingBox = (float)blobs[i].width * (float)blobs[i].height;
-        value = areaBoundingBox / (float)blobs[i].area;
+	// First pass to count valid blobs
+	for (int i = 0; i < *nLabels; i++) {
+		areaBoundingBox = (float)blobs[i].width * (float)blobs[i].height;
+		value = areaBoundingBox / (float)blobs[i].area;
 
-        if (value > 1.26f && value < 1.30f) {
+		if (value > 1.26f && value < 1.30f) {
 			validCount++;
-        } else {
+		}
+		else {
 			blobs[i].area = 0; // Mark invalid
-        }
-    }
+		}
+	}
 
-    if (validCount == 0) {
+	if (validCount == 0) {
 		*nLabels = validCount;
 		free(blobs);
-        return NULL;
-    }
+		return NULL;
+	}
 
-    // Allocate new array and copy valid blobs
-    OVC* newBlobs = (OVC*)calloc(validCount, sizeof(OVC));
-    if (newBlobs != NULL) {
-        int j = 0;
-        for (int i = 0; i < *nLabels; i++) {
-            if (blobs[i].area != 0) {
-                newBlobs[j++] = blobs[i];
-            }
-        }
-    }
+	// Allocate new array and copy valid blobs
+	OVC* newBlobs = (OVC*)calloc(validCount, sizeof(OVC));
+	if (newBlobs != NULL) {
+		int j = 0;
+		for (int i = 0; i < *nLabels; i++) {
+			if (blobs[i].area != 0) {
+				newBlobs[j++] = blobs[i];
+			}
+		}
+	}
 
-    *nLabels = validCount; // Update with new count
+	*nLabels = validCount; // Update with new count
 	free(blobs);
-    return newBlobs;
+	return newBlobs;
 }
 
 /// <summary>
