@@ -1,13 +1,13 @@
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//           INSTITUTO POLIT…CNICO DO C¡VADO E DO AVE
+Ôªø//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//           INSTITUTO POLIT√âCNICO DO C√ÅVADO E DO AVE
 //                          2022/2023
-//             ENGENHARIA DE SISTEMAS INFORM¡TICOS
-//                    VIS√O POR COMPUTADOR
+//             ENGENHARIA DE SISTEMAS INFORM√ÅTICOS
+//                    VIS√ÉO POR COMPUTADOR
 //
 //             [  DUARTE DUQUE - dduque@ipca.pt  ]
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Desabilita (no MSVC++) warnings de funÁıes n„o seguras (fopen, sscanf, etc...)
+// Desabilita (no MSVC++) warnings de fun√ß√µes n√£o seguras (fopen, sscanf, etc...)
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -18,12 +18,22 @@
 
 
 /// <summary>
-/// Etiquetagem de blobs
+/// Performs binary blob labeling on a single‚Äêchannel (binary) image.
+/// Copies the binary data to dst, labels each connected component with a unique ID,
+/// and returns an array of blob descriptors.
 /// </summary>
-/// <param name="src">Imagem bin·ria de entrada</param>
-/// <param name="dst">Imagem grayscale (ir· conter as etiquetas)</param>
-/// <param name="nlabels"> EndereÁo de memÛria de uma vari·vel, onde ser· armazenado o n˙mero de etiquetas encontradas.</param>
-/// <returns>Retorna um array de estruturas de blobs (objectos), com respectivas etiquetas. … necess·rio libertar posteriormente esta memÛria.</returns>
+/// <param name="src">
+/// Source binary image (single channel, values 0 or 255).
+/// </param>
+/// <param name="dst">
+/// Destination image (same size and channels as src) where labels will be written.
+/// </param>
+/// <param name="nlabels">
+/// Pointer to an integer; on return, receives the number of distinct blobs found.
+/// </param>
+/// <returns>
+/// Pointer to an array of OVC structs (one per blob) on success, or NULL on error.
+/// </returns>
 OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 {
 	unsigned char* datasrc = (unsigned char*)src->data;
@@ -39,26 +49,26 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 	int labelarea[255] = { 0 };
 	int label = 1; // Etiqueta inicial.
 	int num, tmplabel;
-	OVC* blobs; // Apontador para array de blobs (objectos) que ser· retornado desta funÁ„o.
+	OVC* blobs; // Apontador para array de blobs (objectos) que ser√° retornado desta fun√ß√£o.
 
-	// VerificaÁ„o de erros
+	// Verifica√ß√£o de erros
 	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL)) return 0;
 	if ((src->width != dst->width) || (src->height != dst->height) || (src->channels != dst->channels)) return NULL;
 	if (channels != 1) return NULL;
 
-	// Copia dados da imagem bin·ria para imagem grayscale
+	// Copia dados da imagem bin√°ria para imagem grayscale
 	memcpy(datadst, datasrc, bytesperline * height);
 
-	// Todos os pixÈis de plano de fundo devem obrigatÛriamente ter valor 0
-	// Todos os pixÈis de primeiro plano devem obrigatÛriamente ter valor 255
-	// Ser„o atribuÌdas etiquetas no intervalo [1,254]
-	// Este algoritmo est· assim limitado a 254 labels
+	// Todos os pix√©is de plano de fundo devem obrigat√≥riamente ter valor 0
+	// Todos os pix√©is de primeiro plano devem obrigat√≥riamente ter valor 255
+	// Ser√£o atribu√≠das etiquetas no intervalo [1,254]
+	// Este algoritmo est√° assim limitado a 254 labels
 	for (i = 0, size = bytesperline * height; i < size; i++)
 	{
 		if (datadst[i] != 0) datadst[i] = 255;
 	}
 
-	// Limpa os rebordos da imagem bin·ria
+	// Limpa os rebordos da imagem bin√°ria
 	for (y = 0; y < height; y++)
 	{
 		datadst[y * bytesperline + 0 * channels] = 0;
@@ -98,13 +108,13 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 				{
 					num = 255;
 
-					// Se A est· marcado
+					// Se A est√° marcado
 					if (datadst[posA] != 0) num = labeltable[datadst[posA]];
-					// Se B est· marcado, e È menor que a etiqueta "num"
+					// Se B est√° marcado, e √© menor que a etiqueta "num"
 					if ((datadst[posB] != 0) && (labeltable[datadst[posB]] < num)) num = labeltable[datadst[posB]];
-					// Se C est· marcado, e È menor que a etiqueta "num"
+					// Se C est√° marcado, e √© menor que a etiqueta "num"
 					if ((datadst[posC] != 0) && (labeltable[datadst[posC]] < num)) num = labeltable[datadst[posC]];
-					// Se D est· marcado, e È menor que a etiqueta "num"
+					// Se D est√° marcado, e √© menor que a etiqueta "num"
 					if ((datadst[posD] != 0) && (labeltable[datadst[posD]] < num)) num = labeltable[datadst[posD]];
 
 					// Atribui a etiqueta ao pixel
@@ -185,7 +195,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 
 	//printf("\nMax Label = %d\n", label);
 
-	// Contagem do n˙mero de blobs
+	// Contagem do n√∫mero de blobs
 	// Passo 1: Eliminar, da tabela, etiquetas repetidas
 	for (a = 1; a < label - 1; a++)
 	{
@@ -194,7 +204,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 			if (labeltable[a] == labeltable[b]) labeltable[b] = 0;
 		}
 	}
-	// Passo 2: Conta etiquetas e organiza a tabela de etiquetas, para que n„o hajam valores vazios (zero) entre etiquetas
+	// Passo 2: Conta etiquetas e organiza a tabela de etiquetas, para que n√£o hajam valores vazios (zero) entre etiquetas
 	*nlabels = 0;
 	for (a = 1; a < label; a++)
 	{
@@ -205,7 +215,7 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels)
 		}
 	}
 
-	// Se n„o h· blobs
+	// Se n√£o h√° blobs
 	if (*nlabels == 0) return NULL;
 
 	// Cria lista de blobs (objectos) e preenche a etiqueta
@@ -367,6 +377,22 @@ int vc_draw_bounding_box(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
+/// <summary>
+/// Filters blobs by how closely their shape resembles a circle.
+/// </summary>
+/// <param name="blobs">
+/// Array of OVC blob descriptors (each with width, height, area, label, etc.).
+/// </param>
+/// <param name="nLabels">
+/// Pointer to the number of blobs in the array. Updated to the count of valid circles.
+/// </param>
+/// <param name="src">
+/// Source image used by vc_delete_blob to erase invalid blobs visually.
+/// </param>
+/// <returns>
+/// Pointer to a newly allocated array of valid circle blobs on success,
+/// or NULL if no valid circles remain.
+/// </returns>
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) { 
 	float areaBoundingBox;
 	float value;

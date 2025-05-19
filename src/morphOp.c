@@ -14,6 +14,15 @@
 #include <malloc.h>
 #include "vc.h"
 
+/// <summary>
+/// Performs binary dilation on a grayscale or RGB binary image.
+/// For each pixel, if any pixel in the kernel neighborhood is white (255),
+/// the output pixel is set to white; otherwise black.
+/// </summary>
+/// <param name="src">Source binary image (1 or 3 channels)</param>
+/// <param name="dst">Destination image to store dilated result</param>
+/// <param name="kernel">Size of the square structuring element (must be odd)</param>
+/// <returns>Returns 1 on success, 0 on failure</returns>
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel)
 {
 	if (!src || !dst || kernel < 1 || kernel % 2 == 0) return 0; // Sanity checks
@@ -63,6 +72,15 @@ int vc_binary_dilate(IVC* src, IVC* dst, int kernel)
 	return 1;
 }
 
+/// <summary>
+/// Performs binary erosion on a grayscale or RGB binary image.
+/// For each pixel, if all pixels in the kernel neighborhood are white (255),
+/// the output pixel is set to white; otherwise black.
+/// </summary>
+/// <param name="src">Source binary image (1 or 3 channels)</param>
+/// <param name="dst">Destination image to store eroded result</param>
+/// <param name="kernel">Size of the square structuring element (must be odd)</param>
+/// <returns>Returns 1 on success, 0 on failure</returns>
 int vc_binary_erode(IVC* src, IVC* dst, int kernel)
 {
 	if (!src || !dst || kernel < 1 || kernel % 2 == 0) return 0; // Sanity checks

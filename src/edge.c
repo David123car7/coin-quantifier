@@ -14,6 +14,20 @@
 #include <malloc.h>
 #include "vc.h"
 
+/// <summary>
+/// Applies the Prewitt edge detection operator to a single-channel (grayscale) image.
+/// Computes horizontal and vertical gradients, combines them to produce edge intensity,
+/// and writes the result into the destination image buffer.
+/// </summary>
+/// <param name="src">
+/// Pointer to the source IVC image struct.
+/// </param>
+/// <param name="dst">
+/// Pointer to the destination IVC image struct.
+/// </param>
+/// <returns>
+/// Returns 1 on success (edge image written to dst), or 0 if input validation fails.
+/// </returns>
 int vc_gray_edge_prewitt(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;
@@ -42,6 +56,18 @@ int vc_gray_edge_prewitt(IVC* src, IVC* dst) {
 	return 1;
 }
 
+/// <summary>
+/// Overlays detected edges from a single-channel edge image onto a color image.
+/// </summary>
+/// <param name="src">
+/// Pointer to the source IVC image struct.
+/// </param>
+/// <param name="dst">
+/// Pointer to the destination IVC image struct.
+/// </param>
+/// <returns>
+/// Returns 1 on success (edges drawn on dst), or 0 on failure (e.g., invalid inputs).
+/// </returns>
 int vc_draw_edge(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;

@@ -1,8 +1,8 @@
-/*****************************************************************//**
+﻿/*****************************************************************//**
  * \file   utils.c
  * \brief  General utility functions.
  * 
- * \author David Carvalho & Gon�alo Vidal & Diogo Marques & Gabriel Fortes
+ * \author David Carvalho & Gonçalo Vidal & Diogo Marques & Gabriel Fortes
  * \date   May 2025
  *********************************************************************/
 
@@ -14,6 +14,13 @@
 #include <malloc.h>
 #include "vc.h"
 
+
+/// <summary>
+/// Converts a multi-channel image to single-channel by copying the first channel.
+/// </summary>
+/// <param name="src">Source image (channels ≥ 1)</param>
+/// <param name="dst">Destination image (single-channel)</param>
+/// <returns>Returns 1 on success, 0 on failure</returns>
 int vc_three_to_one_channel(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;
@@ -33,6 +40,12 @@ int vc_three_to_one_channel(IVC* src, IVC* dst) {
 	return 1;
 }
 
+/// <summary>
+/// Converts a single-channel image to three-channel by replicating the gray value across RGB.
+/// </summary>
+/// <param name="src">Source image (single-channel)</param>
+/// <param name="dst">Destination image (channels ≥ 3)</param>
+/// <returns>1 on success, 0 on failure</returns>
 int vc_one_to_three_channel(IVC* src, IVC* dst) {
 	int width = src->width;
 	int height = src->height;
