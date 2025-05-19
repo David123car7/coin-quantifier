@@ -1,11 +1,11 @@
-﻿//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//           INSTITUTO POLITÉCNICO DO CÁVADO E DO AVE
-//                          2022/2023
-//             ENGENHARIA DE SISTEMAS INFORMÁTICOS
-//                    VISÃO POR COMPUTADOR
-//
-//             [  DUARTE DUQUE - dduque@ipca.pt  ]
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿/*****************************************************************//**
+ * \file   labelling.c
+ * \brief  Implements binary blob labeling and related object analysis
+ *         functions.
+ * 
+ * \author David Carvalho & Gonçalo Vidal & Diogo Marques & Gabriel Fortes
+ * \date   May 2025
+ *********************************************************************/
 
 // Desabilita (no MSVC++) warnings de funções não seguras (fopen, sscanf, etc...)
 #define _CRT_SECURE_NO_WARNINGS
