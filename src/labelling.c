@@ -296,52 +296,54 @@ int check_circle(OVC blob) {
 	return 1;
 }
 
-int delete_blob(IVC* img, OVC blob) {
+int vc_delete_blob(IVC* img, OVC blob) {
 	int x, y;
 	long int pos;
 	int bpl = img->bytesperline;
 	int channels = img->channels;
-	for (y = blob.y; y < blob.height; y++) {
-		for (x = blob.x; x < blob.width; x++) {
+	for (int a = 0; a < blob.height; a++) {
+		for (int b = 0; b < blob.width; b++) {
+			y = a + blob.y;
+			x = b + blob.x;
 			pos = y * img->bytesperline + x * channels;
 			img->data[pos] = 0;
 		}
 	}
-	blob.area = 0;
+	//blob.area = 0;
 	return 1;
 }
 
-OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels) {
-	int res;
-	int valid = *nLabels;
-	for (int i = 0; i < *nLabels; i++) {
-		res = check_circle(blobs[i]);
-		if (res == 0) {
-			delete_blob(img, blobs[i]);
-			valid--;
-		}
-	}
-	if (valid == 0) {
-		*nLabels = valid;
-		free(blobs);
-		return NULL;
-	}
-
-	// Allocate new array and copy valid blobs
-	OVC* newBlobs = (OVC*)calloc(valid, sizeof(OVC));
-	if (newBlobs != NULL) {
-		int j = 0;
-		for (int i = 0; i < *nLabels; i++) {
-			if (blobs[i].area != 0) {
-				newBlobs[j++] = blobs[i];
-			}
-		}
-	}
-
-	*nLabels = valid; // Update with new count
-	free(blobs);
-	return newBlobs;
-}
+//OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels) {
+//	int res;
+//	int valid = *nLabels;
+//	for (int i = 0; i < *nLabels; i++) {
+//		res = check_circle(blobs[i]);
+//		if (res == 0) {
+//			delete_blob(img, blobs[i]);
+//			valid--;
+//		}
+//	}
+//	if (valid == 0) {
+//		*nLabels = valid;
+//		free(blobs);
+//		return NULL;
+//	}
+//
+//	// Allocate new array and copy valid blobs
+//	OVC* newBlobs = (OVC*)calloc(valid, sizeof(OVC));
+//	if (newBlobs != NULL) {
+//		int j = 0;
+//		for (int i = 0; i < *nLabels; i++) {
+//			if (blobs[i].area != 0) {
+//				newBlobs[j++] = blobs[i];
+//			}
+//		}
+//	}
+//
+//	*nLabels = valid; // Update with new count
+//	free(blobs);
+//	return newBlobs;
+//}
 
 /// <summary>
 /// Draws the bounding box of a blob
@@ -434,7 +436,7 @@ int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels) {
 	return 1;
 }
 
-OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
+OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) { 
 	float areaBoundingBox;
 	float value;
 	int validCount = 0;
@@ -444,11 +446,12 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
 		areaBoundingBox = (float)blobs[i].width * (float)blobs[i].height;
 		value = areaBoundingBox / (float)blobs[i].area;
 
-		if (value > 1.26f && value < 1.30f) {
+		if (value > 1.2f && value < 1.351f && blobs[i].area > 1400) {
 			validCount++;
 		}
 		else {
 			blobs[i].area = 0; // Mark invalid
+			vc_delete_blob(src, blobs[i]);
 		}
 	}
 
@@ -480,26 +483,29 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels) {
 /// <param name="firstBlob">First blob</param>
 /// <param name="secondBlob">Second blob</param>
 /// <returns>Returns 1 if there is a collision, returns 0 if there is not a collision</returns>
-int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth) {
-	if (firstBlob.x > secondBlob.x && firstBlob.x < secondBlob.xf) {
-		if (firstBlob.y < secondBlob.yf && firstBlob.y > secondBlob.y) {
-			return 1;
-		}
-		if (firstBlob.yf < secondBlob.yf && firstBlob.yf > secondBlob.y) {
-			return 1;
-		}
-	}
-	if (firstBlob.xf > secondBlob.x && firstBlob.xf < secondBlob.xf) {
-		if (firstBlob.y < secondBlob.yf && firstBlob.y > secondBlob.y) {
-			return 1;
-		}
-		if (firstBlob.yf < secondBlob.yf && firstBlob.yf > secondBlob.y) {
-			return 1;
-		}
+int vc_check_collisions(OVC firstBlob, OVC secondBlob) {
+	int x1 = firstBlob.x;
+	int y1 = firstBlob.y;
+	int x2 = secondBlob.x;
+	int y2 = secondBlob.y;
+	// Check if the bounding boxes overlap
+	if (x1 < x2 + secondBlob.width && x1 + firstBlob.width > x2 && y1 < y2 + secondBlob.height && y1 + firstBlob.height > y2) {
+		return 1;
 	}
 	return 0;
 }
 
-
-
+int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob) {
+	if (firstBlobs == NULL || secondBlobs == NULL) return 0;
+	int cont = 0;
+	int res = 0;
+	for (int i = 0; i < firstBlob; i++) {
+		for (int j = 0; j < secondBlob; j++) {
+			res = vc_check_collisions(firstBlobs[i], secondBlobs[i]);
+			if (res == 1) break;
+		}
+		if (res == 0) cont++;
+	}
+	return cont;
+}
 

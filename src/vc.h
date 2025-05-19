@@ -53,7 +53,7 @@ int vc_gray_to_binary_midpoint(IVC* src, IVC* dst, int kernel);
 int vc_binary_dilate(IVC* src, IVC* dst, int kernel);
 int vc_binary_erode(IVC* src, IVC* dst, int kernel);
 int vc_gray_histogram_equalization(IVC* src, IVC* dst);
-int vc_gray_edge_prewitt(IVC* src, IVC* dst, float th);
+int vc_gray_edge_prewitt(IVC* src, IVC* dst);
 int vc_draw_edge(IVC* src, IVC* dst);
 
 
@@ -86,11 +86,12 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 int vc_draw_bounding_box(IVC* src, IVC* dest, OVC* blobs, int nlabels);
 int vc_draw_bounding_box2(IVC* dest, OVC* blobs, int nlabels);
-OVC* vc_check_if_circle(OVC* blobs, int* nLabels);
-int vc_check_collisions(OVC firstBlob, OVC secondBlob, int imageWidth);
-OVC* vc_check_circles(IVC* img, OVC* blobs, int* nLabels);
+OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src);
+int vc_check_collisions(OVC firstBlob, OVC secondBlob);
+int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob);
 int vc_limit(IVC* src, IVC* dst, int y);
 int vc_limit2(IVC* src, IVC* dst, int y);
+int vc_delete_blob(IVC* img, OVC blob);
 
 #pragma endregion
 

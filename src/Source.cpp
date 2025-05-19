@@ -12,7 +12,7 @@ extern "C" {
 
 int main(void) {
 	// V�deo
-	char videofile[20] = "videos/video1.mp4";
+	char videofile[20] = "videos/video2.mp4";
 	cv::VideoCapture capture;
 	struct
 	{
@@ -53,9 +53,9 @@ int main(void) {
 	IVC* imageF = vc_image_new(video.width, h, 1, 255);
 	IVC* imageH = vc_image_new(video.width, h, 1, 255);
 
-	OVC* blobBuffer = NULL;
-
+	OVC* blobsBuffer = NULL;
 	int numberBlobsBuffer = 0;
+	int cont = 0;
 	int dictKey = 0;
 
 	cv::Mat frame;
@@ -70,18 +70,18 @@ int main(void) {
 		/* N�mero da frame a processar */
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
 
-		str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
-		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-		str = std::string("TOTAL DE FRAMES: ").append(std::to_string(video.ntotalframes));
-		cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-		cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-		str = std::string("FRAME RATE: ").append(std::to_string(video.fps));
-		cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-		cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-		str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
-		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+		//str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
+		//cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
+		//cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+		//str = std::string("TOTAL DE FRAMES: ").append(std::to_string(video.ntotalframes));
+		//cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
+		//cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+		//str = std::string("FRAME RATE: ").append(std::to_string(video.fps));
+		//cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
+		//cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+		//str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
+		//cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
+		//cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
 		
 
 		// Fa�a o seu c�digo aqui...
@@ -97,7 +97,7 @@ int main(void) {
 		vc_gbr_rgb(imageA);
 		vc_rgb_to_hsv(imageA, imageB);
 		vc_hsv_segmentation2(imageB, imageC, 40, 60, 20, 80, 15, 55);//amarelo
-		vc_hsv_segmentation2(imageB, imageA, 19, 34, 37, 75, 15, 47);//castanho
+		vc_hsv_segmentation2(imageB, imageA, 19, 38, 37, 82, 13, 47);//castanho
 		vc_add_image(imageC, imageA);
 		vc_hsv_segmentation2(imageB, imageC, 40, 200, 4, 24, 15, 50);//cinzento
 		vc_add_image(imageC, imageA);
@@ -106,36 +106,23 @@ int main(void) {
 		vc_three_to_one_channel(imageA, imageF);
 		OVC* blobs = vc_binary_blob_labelling(imageF, imageH, &nlabels);
 		vc_binary_blob_info(imageH, blobs, nlabels);
-		blobs = vc_check_if_circle(blobs, &nlabels);
+		blobs = vc_check_if_circle(blobs, &nlabels, imageF);
 		if (blobs != NULL) {
 			vc_draw_bounding_box2(imageD, blobs, nlabels);
+			vc_gray_edge_prewitt(imageF, imageH);
+			vc_draw_edge(imageH, imageD);
+			if (blobsBuffer != NULL) {
+				cont += vc_main_collisions(blobsBuffer, blobs, numberBlobsBuffer, nlabels);
+			}
 		}
-		//vc_one_to_three_channel(imageF, imageA);
-
+		blobsBuffer = blobs;
+		numberBlobsBuffer = nlabels;
+		//vc_one_to_three_channel(imageD, imageA);
 		vc_limit2(imageD, image, h);
 		memcpy(frame.data, image->data, video.width* video.height * 3);
-		
-		/*OVC* blobs = vc_binary_blob_labelling(imageF, imageH, &nlabels);
-		vc_binary_blob_info(imageF, blobs, nlabels);
-		OVC* newBlobs = vc_check_if_circle(blobs, &nlabels);
-		if (newBlobs == NULL) continue;
-
-		if (blobBuffer == NULL) {
-			blobBuffer = newBlobs;
-		}
-		else {
-			int x = vc_check_collisions(blobBuffer[0], newBlobs[0]);
-			free(blobs);
-			blobBuffer = newBlobs;
-			numberBlobsBuffer = nlabels;
-		}
-		
-		vc_draw_bounding_box2(image, newBlobs, nlabels);
-		vc_gray_edge_prewitt(imageH, imageF, 5);
-		vc_draw_edge(imageF, image);*/
-		
-		//memcpy(frame.data, imageB->data, video.width* video.height * 3);
-
+		str = std::string("Nº moedas: ").append(std::to_string(cont));
+		cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
+	
 		// +++++++++++++++++++++++++
 
 		/* Exibe a frame */

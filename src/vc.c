@@ -828,7 +828,7 @@ int vc_limit(IVC* src, IVC* dst, int y){
 	int channels = src->channels;
 	long int pos1, pos2;
 	int y1 = y;
-	for (int y2 = y; y2 < y + y; y2++) {
+	for (int y2 = y; y2 < y*2; y2++) {
 		for (int x = 0; x < width; x++) {
 			pos1 = y2 * bpl + x * channels;
 			pos2 = (y2 - y1) * bpl + x * channels;
@@ -846,7 +846,7 @@ int vc_limit2(IVC* src, IVC* dst, int y) {
 	int channels = src->channels;
 	long int pos1, pos2;
 	int y1 = y;
-	for (int y2 = y; y2 < y + y; y2++) {
+	for (int y2 = y; y2 < y * 2; y2++) {
 		for (int x = 0; x < width; x++) {
 			pos1 = y2 * bpl + x * channels;
 			pos2 = (y2 - y1) * bpl + x * channels;
