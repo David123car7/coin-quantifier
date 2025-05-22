@@ -50,6 +50,9 @@ int main(void) {
 	int cont = 0;
 	int m200 = 0, m100 = 0, m50 = 0, m20 = 0, m10 = 0, m5 = 0, m2 = 0, m1 = 0, soma = 0;
 
+	OVC* blobBuffer = NULL;
+	int nLablesBuffer = -1;
+
 	cv::Mat frame;
 	cv::Mat frameA;
 	while (key != 'q') {
@@ -89,7 +92,17 @@ int main(void) {
 					str = std::string("Perimetro : ").append(std::to_string(blobs[i].perimeter));
 					cv::putText(frame, str, cv::Point(blobs[i].xc + 90, blobs[i].yc - 0), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 2);
 
-					if (image->height / 4 >= blobs[i].yc - 15 && image->height <= blobs[i].yc + 20) {
+					if ((image->height / 2 - 20) <= blobs[i].yc && (image->height / 2 + 20) >= blobs[i].yc) {
+						if (blobBuffer != NULL) {
+							int res = vc_main_collisions(blobBuffer, blobs, nLablesBuffer, nlabels);
+							if (res == 1) {
+								blobBuffer = blobs;
+								nLablesBuffer = nlabels;
+								continue;
+							}
+						}
+						blobBuffer = blobs;
+						nLablesBuffer = nlabels;
 						switch (idCoin(blobs[i].area, blobs[i].perimeter)) {
 						case 200:
 							m200++;
