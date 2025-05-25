@@ -68,7 +68,7 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nlabels);
 int vc_draw_bounding_box(IVC* dest, OVC* blobs, int nlabels);
 OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src);
 int vc_check_collisions(OVC firstBlob, OVC secondBlob);
-int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob);
+int vc_main_collisions(OVC blob, OVC* secondBlobs, int secondBlob);
 int vc_delete_blob(IVC* img, OVC blob);
 int idCoin(int area, int perimeter);
 int vc_center(OVC* blobs, IVC* dst, int nlabels);

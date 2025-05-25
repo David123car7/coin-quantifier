@@ -440,8 +440,8 @@ OVC* vc_check_if_circle(OVC* blobs, int* nLabels, IVC* src) {
 /// <returns>Returns 1 if there is a collision, returns 0 if there is not a collision</returns>
 int vc_check_collisions(OVC firstBlob, OVC secondBlob) {
 	int x1 = firstBlob.x;
-	int y1 = firstBlob.y;
 	int x2 = secondBlob.x;
+	int y1 = firstBlob.y;
 	int y2 = secondBlob.y;
 	// Check if the bounding boxes overlap
 	if (x1 < x2 + secondBlob.width && x1 + firstBlob.width > x2 && y1 < y2 + secondBlob.height && y1 + firstBlob.height > y2) {
@@ -450,34 +450,30 @@ int vc_check_collisions(OVC firstBlob, OVC secondBlob) {
 	return 0;
 }
 
-int vc_main_collisions(OVC* firstBlobs, OVC* secondBlobs, int firstBlob, int secondBlob) {
-	if (firstBlobs == NULL || secondBlobs == NULL) return 0;
-	int cont = 0;
+int vc_main_collisions(OVC blob, OVC* secondBlobs, int secondBlob) {
+	if(secondBlobs == NULL) return 0;
 	int res = 0;
-	for (int i = 0; i < firstBlob; i++) {
-		for (int j = 0; j < secondBlob; j++) {
-			res = vc_check_collisions(firstBlobs[i], secondBlobs[i]);
-			if (res == 1) break;
-		}
-		if (res == 0) cont++;
+	for (int j = 0; j < secondBlob; j++) {
+		res = vc_check_collisions(blob, secondBlobs[j]);
+		if (res == 1) return 1;
 	}
-	return cont;
+	return res;
 }
 
 int idCoin(int area, int perimeter) {
-	if (area >= 24000 && area <= 26000 && perimeter > 550 && perimeter < 600) {
+	if (area >= 24500 && area <= 25500 && perimeter > 550 && perimeter < 600) {
 		return 50; //funciona
 	}
-	else if (area >= 2100 && area <= 22000 && perimeter > 500 && perimeter < 550) {
+	else if (area >= 20000 && area <= 21500 && perimeter > 500 && perimeter < 550) {
 		return 20; //funciona
 	}
-	else if (area >= 27000 && area <= 27500 && perimeter > 600 && perimeter < 630) {
+	else if (area >= 27000 && area <= 28000 && perimeter > 600 && perimeter < 650) {
 		return 200; //funciona
 	}
 	else if (area >= 16000 && area <= 17000 && perimeter > 450 && perimeter <= 500) {
 		return 10;
 	}
-	else if (area >= 18000 && area <= 19000) {
+	else if (area >= 17500 && area <= 19000) {
 		return 5;
 	}
 	else if (area >= 21000 && perimeter > 500) {
@@ -493,11 +489,21 @@ int idCoin(int area, int perimeter) {
 }
 
 int vc_center(OVC* blobs, IVC* dst, int nlabels) {
-
+	int res = dst->height * dst->width;
 	for (int k = 0; k < nlabels; k++) {
-		int pos = blobs[k].yc * dst->bytesperline + blobs[k].xc * 3;
-		dst->data[pos] = 0;
-		dst->data[pos + 1] = 0;
-		dst->data[pos + 2] = 0;
+		for (int j = -5; j < 5; j++) {
+			int pos = blobs[k].yc * dst->bytesperline + (blobs[k].xc * 3) + j;
+			if (pos > 0 && pos < res) {
+				dst->data[pos] = 255;
+				dst->data[pos + 1] = 0;
+				dst->data[pos + 2] = 0;
+			}
+			pos = (blobs[k].yc - j) * dst->bytesperline + (blobs[k].xc * 3);
+			if (pos>0 && pos<res) {
+				dst->data[pos] = 255;
+				dst->data[pos + 1] = 0;
+				dst->data[pos + 2] = 0;
+			}
+		}
 	}
 }

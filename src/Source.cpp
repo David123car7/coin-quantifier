@@ -47,10 +47,12 @@ int main(void) {
 	IVC* imageF = vc_image_new(video.width, video.height, 1, 255);
 	IVC* imageH = vc_image_new(video.width, video.height, 1, 255);
 
-	int cont = 0;
-	int m200 = 0, m100 = 0, m50 = 0, m20 = 0, m10 = 0, m5 = 0, m2 = 0, m1 = 0, soma = 0;
+	int cont = 0, cont2 = 0;
+	int m200 = 0, m100 = 0, m50 = 0, m20 = 0, m10 = 0, m5 = 0, m2 = 0, m1 = 0;
+	float soma = 0;
 
-	OVC* blobBuffer = NULL;
+	OVC* blobBuffer1 = NULL;
+	OVC* blobBuffer2 = NULL;
 	int nLablesBuffer = -1;
 
 	cv::Mat frame;
@@ -59,10 +61,10 @@ int main(void) {
 		capture.read(frame);
 		if (frame.empty()) break;
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
-
+		blobBuffer2 = (OVC*)calloc(10, sizeof(OVC));
 		cv::medianBlur(frame, frameA, 5);
-		memcpy(image->data, frameA.data, video.width* video.height * 3);
-		memcpy(imageI->data, frameA.data, video.width* video.height * 3);
+		memcpy(image->data, frameA.data, video.width * video.height * 3);
+		memcpy(imageI->data, frameA.data, video.width * video.height * 3);
 		int nlabels = 0;
 		vc_gbr_rgb(image);
 		vc_rgb_to_hsv(image, imageB);
@@ -83,7 +85,7 @@ int main(void) {
 				vc_gray_edge_prewitt(imageF, imageH);
 				vc_draw_edge(imageH, imageI);
 				vc_center(blobs, imageI, nlabels);
-				memcpy(frame.data, imageI->data, video.width* video.height * 3);
+				memcpy(frame.data, imageI->data, video.width * video.height * 3);
 				for (int i = 0; i < nlabels; i++) {
 					str = std::string("CENTRO DE MASSA : ").append(std::to_string(blobs[i].xc)).append(", y: ").append(std::to_string(blobs[i].yc));
 					cv::putText(frame, str, cv::Point(blobs[i].xc + 90, blobs[i].yc - 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 2);
@@ -93,48 +95,56 @@ int main(void) {
 					cv::putText(frame, str, cv::Point(blobs[i].xc + 90, blobs[i].yc - 0), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 2);
 
 					if ((image->height / 2 - 20) <= blobs[i].yc && (image->height / 2 + 20) >= blobs[i].yc) {
-						if (blobBuffer != NULL) {
-							int res = vc_main_collisions(blobBuffer, blobs, nLablesBuffer, nlabels);
+						if (blobBuffer1 != NULL) {
+							int res = vc_main_collisions(blobs[i], blobBuffer1, nlabels);
 							if (res == 1) {
-								blobBuffer = blobs;
-								nLablesBuffer = nlabels;
+								blobBuffer2[cont] = blobs[i];
+								cont++;
 								continue;
 							}
 						}
-						blobBuffer = blobs;
-						nLablesBuffer = nlabels;
+						blobBuffer2[cont] = blobs[i];
+						cont++;
 						switch (idCoin(blobs[i].area, blobs[i].perimeter)) {
 						case 200:
 							m200++;
 							soma += 2;
+							cont2++;
 							break;
 						case 100:
 							m100++;
+							cont2++;
 							soma += 1;
 							break;
 						case 50:
 							m50++;
+							cont2++;
 							soma += 0.5;
 							break;
 						case 20:
 							m20++;
+							cont2++;
 							soma += 0.2;
 							break;
 						case 10:
 							m10++;
+							cont2++;
 							soma += 0.1;
 							break;
 						case 5:
 							m5++;
+							cont2++;
 							soma += 0.05;
 							break;
 						case 2:
 							m2++;
+							cont2++;
 							soma += 0.02;
 							break;
 						case 1:
 							m1++;
 							soma += 0.01;
+							cont2++;
 							break;
 						default:
 							break;
@@ -143,7 +153,9 @@ int main(void) {
 				}
 			}
 		}
-	
+		blobBuffer1 = blobBuffer2;
+		blobBuffer2 = NULL;
+		cont = 0;
 		str = std::string("Moedas de 200 : ").append(std::to_string(m200));
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 0.75, cv::Scalar(255, 0, 0), 2);
 		str = std::string("Moedas de 100 : ").append(std::to_string(m100));
@@ -162,6 +174,9 @@ int main(void) {
 		cv::putText(frame, str, cv::Point(20, 200), cv::FONT_HERSHEY_SIMPLEX, 0.75, cv::Scalar(255, 0, 0), 2);
 		str = std::string("Total : ").append(std::to_string(soma));
 		cv::putText(frame, str, cv::Point(20, 225), cv::FONT_HERSHEY_SIMPLEX, 0.75, cv::Scalar(255, 0, 0), 2);
+		str = std::string("Total Moedas: ").append(std::to_string(cont2));
+		cv::putText(frame, str, cv::Point(20, 250), cv::FONT_HERSHEY_SIMPLEX, 0.75, cv::Scalar(255, 0, 0), 2);
+
 		cv::imshow("VC - VIDEO1", frame);
 		key = cv::waitKey(1);
 	}
