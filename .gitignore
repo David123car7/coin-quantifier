@@ -67,8 +67,9 @@ ipch/
 *.VC.db
 *.VC.VC.opendb
 
-src/.vs
-src/x64
+
+coin-quantifier
+Source.o
 
 
 
