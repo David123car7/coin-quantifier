@@ -32,7 +32,7 @@ This project implements a C application that automatically detects and counts eu
 2. **Compile te program:**
 
    ```bash
-   g++ Source.cpp vc.c -Iinclude `pkg-config --cflags --libs opencv4` -o coin-quantifier
+   g++ -std=c++17 Source.cpp colors.c edge.c labelling.c morphOp.c utils.c vc.c -o coin-quantifier `pkg-config --cflags --libs opencv4`
 
 3. **Run the program:**
 
