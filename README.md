@@ -1,11 +1,10 @@
 # Coin Quantifier
 
+This project implements a C application that automatically detects and counts euro coins in provided video files. It analyzes each frame to identify coins by denomination, computes their areas and perimeters, and overlays bounding shapes and centroids in real time.
+
+
 > **Academic Context**  
 > Developed as part of the “Computer Vision” course in the second year of the degree in Computer Systems Engineering (2024/2025) at Instituto Politécnico do Cávado e do Ave.
-
-## 📚 Overview
-
-This project implements a C application that automatically detects and counts euro coins in provided video files. It analyzes each frame to identify coins by denomination, computes their areas and perimeters, and overlays bounding shapes and centroids in real time.
 
 ## 🎯 Objectives
 
@@ -22,7 +21,7 @@ This project implements a C application that automatically detects and counts eu
 - **Language:** C  
 - **Library:** OpenCV C 
 
-## 🚀 How to Run (Linux)
+## 🚀 How to Run 
 
 1. **Install dependencies:**
 
@@ -39,5 +38,9 @@ This project implements a C application that automatically detects and counts eu
    ```bash
    ./coin-quantifier
 
-If using windows open the program with visual studio
+## 📷 Images
+
+![Alt text](_imgs/image1.png)
+
+![Alt text](_imgs/image2.png)
 
