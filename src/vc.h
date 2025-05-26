@@ -2,9 +2,14 @@
  * \file   vc.h
  * \brief  Declarations of all functions in the program.
  * 
- * \author David Carvalho & Gonçalo Vidal & Diogo Marques & Gabriel Fortes
+ * \author David Carvalho & Gonï¿½alo Vidal & Diogo Marques & Gabriel Fortes
  * \date   May 2025
  *********************************************************************/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #define VC_DEBUG
 
@@ -74,3 +79,6 @@ int idCoin(int area, int perimeter);
 int vc_center(OVC* blobs, IVC* dst, int nlabels);
 #pragma endregion
 
+#ifdef __cplusplus
+}
+#endif

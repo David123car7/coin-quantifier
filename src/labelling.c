@@ -506,4 +506,6 @@ int vc_center(OVC* blobs, IVC* dst, int nlabels) {
 			}
 		}
 	}
+	return 1;
 }
+

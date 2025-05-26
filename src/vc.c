@@ -13,7 +13,7 @@
 #include "vc.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//            FUNÇÕES: ALOCAR E LIBERTAR UMA IMAGEM
+//            FUNï¿½ï¿½ES: ALOCAR E LIBERTAR UMA IMAGEM
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -355,6 +355,8 @@ int vc_add_image(IVC* src, IVC* dst) {
 			}
 		}
 	}
+
+	return 1;
 }
 
 
