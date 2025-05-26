@@ -20,7 +20,7 @@ This project implements a C application that automatically detects and counts eu
 ## 🛠️ Technologies
 
 - **Language:** C  
-- **Library:** OpenCV C API
+- **Library:** OpenCV C 
 
 ## 🚀 How to Run (Linux)
 
