@@ -6,7 +6,7 @@ This project implements a C application that automatically detects and counts eu
 > **Academic Context**  
 > Developed as part of the “Computer Vision” course in the second year of the degree in Computer Systems Engineering (2024/2025) at Instituto Politécnico do Cávado e do Ave.
 
-## 🎯 Objectives
+## Objectives
 
 1. Read an input video (`*.mp4`) specified by the user.  
 2. Detect all visible coins in each frame.  
@@ -16,12 +16,12 @@ This project implements a C application that automatically detects and counts eu
    - Area and perimeter (in pixels) of every detected coin.  
    - Overlay on the video feed: bounding box, centroid, and coin denomination label.
 
-## 🛠️ Technologies
+## Technologies
 
 - **Language:** C  
 - **Library:** OpenCV C 
 
-## 🚀 How to Run 
+## How to Run 
 
 1. **Install dependencies:**
 
@@ -38,7 +38,7 @@ This project implements a C application that automatically detects and counts eu
    ```bash
    ./coin-quantifier
 
-## 📷 Images
+## Images
 
 ![Alt text](_imgs/image1.png)
 
